@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 防止搜尋引擎收錄 -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="referrer" content="no-referrer">
+
+<title>房貸增貸資產配置試算</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500;600&family=Noto+Serif+TC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #f7f4ec;
+    --bg-card: #fffdf7;
+    --bg-sunken: #efeadb;
+    --ink: #1f2924;
+    --ink-soft: #5a665e;
+    --ink-mute: #8a948c;
+    --line: #d9d2bf;
+    --line-soft: #e8e2cf;
+    --accent: #1e4d3a;
+    --accent-soft: #34715a;
+    --accent-bg: #e3ead0;
+    --warn: #8b3a1f;
+    --warn-bg: #f4e5d9;
+    --gold: #a8804b;
+    --y6: #8fb7c9;
+    --y7: #5b8fa8;
+    --y8: #2d6885;
+    --y9: #0d3a55;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 18px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 32px 16px 80px;
+  }
+
+  .page {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 28px 0 32px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .eyebrow {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 16px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    font-style: italic;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 18px 0 0;
+    color: var(--gold);
+    font-size: 13px;
+  }
+  .ornament::before, .ornament::after {
+    content: "";
+    height: 1px;
+    width: 60px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  /* Notice */
+  .notice {
+    background: var(--warn-bg);
+    border-left: 3px solid var(--warn);
+    padding: 14px 18px;
+    margin-bottom: 32px;
+    border-radius: 2px;
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+  .notice strong {
+    color: var(--warn);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+  .section-title .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: var(--gold);
+    font-style: italic;
+    margin-left: auto;
+    letter-spacing: 0.1em;
+  }
+
+  /* Input panel */
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px 36px;
+    background: var(--bg-card);
+    padding: 22px 26px;
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+  }
+  @media (max-width: 900px) {
+    .input-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .payment-right {
+      grid-column: 2;
+    }
+  }
+  @media (max-width: 600px) {
+    .input-grid {
+      grid-template-columns: 1fr;
+    }
+    .payment-right {
+      grid-column: 1;
+    }
+  }
+  .inline-payment {
+    background: linear-gradient(135deg, var(--accent-bg), transparent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+  }
+  .inline-payment .lp-label {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    font-weight: 500;
+    text-transform: none;
+  }
+  .inline-payment .lp-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 29px;
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .inline-payment .lp-unit {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-left: 4px;
+    font-weight: normal;
+  }
+  .inline-payment.warn {
+    background: linear-gradient(135deg, var(--warn-bg), transparent);
+    border-color: var(--warn);
+  }
+  .inline-payment.warn .lp-label { color: var(--warn); }
+  .inline-payment.warn .lp-amount { color: var(--warn); }
+  /* 月還款固定靠右(第 3 欄) */
+  .payment-right {
+    grid-column: 3;
+  }
+  .input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .input-row label {
+    font-size: 15px;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .input-box {
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    overflow: hidden;
+  }
+  .input-box:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-bg);
+  }
+  .input-box input[type=number] {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 11px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--ink);
+    outline: none;
+    font-variant-numeric: tabular-nums;
+    -moz-appearance: textfield;
+  }
+  .input-box input[type=number]::-webkit-outer-spin-button,
+  .input-box input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .input-box .unit {
+    padding: 0 14px;
+    font-size: 16px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    border-left: 1px solid var(--line-soft);
+    background: var(--bg-sunken);
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+  }
+  .input-hint {
+    font-size: 14px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+
+  /* Toggle */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    margin-top: 14px;
+  }
+  .toggle-row .toggle-info {
+    flex: 1;
+  }
+  .toggle-row .toggle-title {
+    font-size: 16px;
+    color: var(--ink);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .toggle-row .toggle-desc {
+    font-size: 14px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+  }
+  .switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    background: var(--line);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .switch.on { background: var(--accent); }
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    background: var(--bg-card);
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .switch.on::after { transform: translateX(18px); }
+
+  /* Summary */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .stat {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    padding: 16px 18px;
+    border-radius: 4px;
+    position: relative;
+  }
+  .stat::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .stat-label {
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-transform: none;
+  }
+  .stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .stat-unit {
+    font-size: 18px;
+    color: var(--ink-soft);
+    font-family: 'Noto Sans TC', sans-serif;
+    margin-left: 4px;
+  }
+
+  /* Calc panel */
+  .calc-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 24px 28px;
+  }
+  .calc-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px 36px;
+    margin-bottom: 26px;
+    padding-bottom: 22px;
+    border-bottom: 1px dashed var(--line-soft);
+  }
+  .rate-group {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+  }
+  .rate-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .rate-btn:hover {
+    background: var(--line-soft);
+    color: var(--ink);
+  }
+  .rate-btn.active {
+    background: var(--accent);
+    color: #fffdf7;
+  }
+  .calc-output {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .calc-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0;
+  }
+  .calc-line .cl-label {
+    color: var(--ink-soft);
+    font-size: 17px;
+    letter-spacing: 0.05em;
+  }
+  .calc-line .cl-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 21px;
+    font-variant-numeric: tabular-nums;
+  }
+  .calc-line.total {
+    padding: 16px 0 4px;
+    margin-top: 6px;
+    border-top: 1.5px solid var(--ink);
+  }
+  .calc-line.total .cl-label {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 500;
+    color: var(--ink);
+    font-size: 19px;
+    letter-spacing: 0.08em;
+  }
+  .calc-line.total .cl-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px;
+    font-weight: 600;
+  }
+
+  /* Scenarios */
+  .scenarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .scenario {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .scenario::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent-color);
+  }
+  .scenario[data-y="6"] { --accent-color: var(--y6); }
+  .scenario[data-y="7"] { --accent-color: var(--y7); }
+  .scenario[data-y="8"] { --accent-color: var(--y8); }
+  .scenario[data-y="9"] { --accent-color: var(--y9); }
+  .scenario-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--line-soft);
+  }
+  .scenario-rate {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 27px;
+    font-weight: 600;
+    color: var(--accent-color);
+  }
+  .scenario-tag {
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+  .scenario-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+  .scenario-row .lbl {
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+  .scenario-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  .pos { color: var(--accent); }
+  .neg { color: var(--warn); }
+  .scenario-final {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .scenario-final .lbl {
+    font-size: 14px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    margin-bottom: 3px;
+  }
+  .scenario-final .val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 25px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Chart */
+  .chart-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 22px 24px 18px;
+  }
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 14px;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .chart-legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .chart-legend .dot {
+    display: inline-block;
+    width: 12px;
+    height: 2px;
+  }
+  .chart-canvas-wrap {
+    position: relative;
+    height: 320px;
+  }
+
+  /* Compare Panel */
+  .compare-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 26px 28px;
+  }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+  .compare-side {
+    padding: 20px 22px;
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+  }
+  .cs-label {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.12em;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--line);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .cs-label #cmp-rate-tag {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin-left: 4px;
+  }
+  .cs-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+    min-height: 64px;
+  }
+  .cs-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 16px;
+  }
+  .cs-row.cs-spacer { visibility: hidden; }
+  .cs-row-label {
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .cs-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .cs-summary {
+    padding-top: 14px;
+    border-top: 1.5px solid var(--ink);
+    text-align: center;
+  }
+  .cs-summary-label {
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .cs-summary-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .cs-summary-num.surplus { color: var(--accent); }
+  .cs-summary-num.deficit { color: var(--warn); }
+  .verdict {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 24px;
+    border-radius: 3px;
+    border: 1px solid;
+  }
+  .verdict.success {
+    background: var(--accent-bg);
+    border-color: var(--accent);
+  }
+  .verdict.fail {
+    background: var(--warn-bg);
+    border-color: var(--warn);
+  }
+  .verdict.neutral {
+    background: var(--bg-sunken);
+    border-color: var(--line);
+  }
+  .verdict-icon {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 600;
+    line-height: 0.9;
+    width: 48px;
+    text-align: center;
+  }
+  .verdict.success .verdict-icon { color: var(--accent); }
+  .verdict.fail .verdict-icon { color: var(--warn); }
+  .verdict.neutral .verdict-icon { color: var(--ink-soft); }
+  .verdict-body { flex: 1; }
+  .verdict-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+  .verdict.success .verdict-title { color: var(--accent); }
+  .verdict.fail .verdict-title { color: var(--warn); }
+  .verdict.neutral .verdict-title { color: var(--ink); }
+  .verdict-detail {
+    font-size: 16px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .disclaimer {
+    font-size: 14px;
+    color: var(--ink-mute);
+    line-height: 1.85;
+    text-align: justify;
+  }
+  .disclaimer .title-d {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    letter-spacing: 0.1em;
+  }
+  .sign {
+    text-align: center;
+    margin-top: 32px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--ink-mute);
+    letter-spacing: 0.2em;
+  }
+  .sign .div {
+    display: inline-block;
+    margin: 0 8px;
+    color: var(--gold);
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; padding: 20px; }
+    .toggle-row { page-break-inside: avoid; }
+    .scenario, .stat { page-break-inside: avoid; }
+    .input-box { border: 1px solid #999; }
+    .input-box input[type=number] { color: #000; }
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 20px 12px 60px; font-size: 17px; }
+    .title { font-size: 31px; }
+    .stat-value { font-size: 25px; }
+    .scenario-rate { font-size: 23px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .cs-rows { min-height: auto; }
+    .cs-row.cs-spacer { display: none; }
+  }
+  /* ========== 密碼鎖畫面 ========== */
+  .pwd-lock {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .pwd-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 56px 48px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,41,36,0.08);
+  }
+  .pwd-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .pwd-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 31px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .pwd-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+  .pwd-ornament {
+    color: var(--gold);
+    font-size: 13px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .pwd-ornament::before, .pwd-ornament::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+  .pwd-ornament::before { right: calc(50% + 10px); }
+  .pwd-ornament::after { left: calc(50% + 10px); }
+  .pwd-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .pwd-form input {
+    border: 1px solid var(--line);
+    background: var(--bg);
+    padding: 14px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--ink);
+    border-radius: 3px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.2em;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .pwd-form input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+  .pwd-form button {
+    background: var(--accent);
+    color: #fffdf7;
+    border: none;
+    padding: 13px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s;
+  }
+  .pwd-form button:hover { background: var(--accent-soft); }
+  .pwd-message {
+    min-height: 20px;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+  }
+  .pwd-message.error { color: var(--warn); }
+  .pwd-footer {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    color: var(--ink-mute);
+    letter-spacing: 0.15em;
+    padding-top: 24px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+</style>
+</head>
+
+<body>
+
+<!-- ============ 密碼鎖畫面 ============ -->
+<div id="passwordLock" class="pwd-lock">
+  <div class="pwd-card">
+    <div class="pwd-eyebrow">Confidential Access</div>
+    <h1 class="pwd-title">受保護內容</h1>
+    <div class="pwd-subtitle">Please enter password to continue</div>
+    <div class="pwd-ornament">◆</div>
+    <div class="pwd-form">
+      <input type="password" id="pwdInput" placeholder="請輸入密碼" autocomplete="off" autofocus>
+      <button type="button" id="pwdSubmit">解鎖</button>
+    </div>
+    <div class="pwd-message" id="pwdMessage"></div>
+    <div class="pwd-footer">For private review only · 內容僅供受邀者使用</div>
+  </div>
+</div>
+
+<!-- ============ 主內容容器(密碼正確後才顯示) ============ -->
+<div id="mainContent" style="display:none;">
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="eyebrow">Asset Optimization Plan</div>
+    <h1 class="title">房貸增貸 · 資產配置試算</h1>
+    <div class="subtitle">Refinancing Cashflow & Dividend Yield Analysis</div>
+    <div class="ornament">◆</div>
+  </header>
+
+  <!-- Notice -->
+  <div class="notice">
+    <strong>· 機密 CONFIDENTIAL ·</strong>
+    本試算僅供您與本顧問內部討論使用,所有數字為情境假設模型,並非投資承諾或保證收益。實際結果受利率、配息穩定度、匯率與標的淨值變化影響。請於決策前完整閱讀末頁風險說明。
+  </div>
+
+  <!-- 原房貸 -->
+  <section class="section">
+    <div class="section-title">原房貸資訊<span class="num">I.</span></div>
+    <div class="input-grid">
+      <div class="input-row">
+        <label>原始貸款金額</label>
+        <div class="input-box">
+          <input type="number" id="ol" value="" min="0" step="10">
+          <span class="unit">萬元</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>原貸款利率</label>
+        <div class="input-box">
+          <input type="number" id="or" value="" min="0" step="0.05">
+          <span class="unit">%</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>原貸款年限</label>
+        <div class="input-box">
+          <input type="number" id="ot" value="" min="1" step="1">
+          <span class="unit">年</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>已繳納年數</label>
+        <div class="input-box">
+          <input type="number" id="yp" value="" min="0" step="1">
+          <span class="unit">年</span>
+        </div>
+      </div>
+      <div class="input-row inline-payment payment-right">
+        <span class="lp-label">每月還款金額</span>
+        <span class="lp-amount"><span id="livePmtOrig">—</span><span class="lp-unit">元 / 月</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 增貸 -->
+  <section class="section">
+    <div class="section-title">增貸條件設定<span class="num">II.</span></div>
+    <div class="input-grid">
+      <div class="input-row">
+        <label>增貸總額</label>
+        <div class="input-box">
+          <input type="number" id="cash" value="" min="0" step="10">
+          <span class="unit">萬元</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>增貸利率</label>
+        <div class="input-box">
+          <input type="number" id="rr" value="" min="0" step="0.05">
+          <span class="unit">%</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>增貸年限</label>
+        <div class="input-box">
+          <input type="number" id="rt" value="" min="1" step="1">
+          <span class="unit">年</span>
+        </div>
+      </div>
+      <div class="input-row inline-payment warn payment-right">
+        <span class="lp-label">增貸後每月還款</span>
+        <span class="lp-amount"><span id="livePmtNew">—</span><span class="lp-unit">元 / 月</span></span>
+      </div>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-title">啟用壓力測試模式</div>
+        <div class="toggle-desc">配息率打 7 折、增貸利率 +1%,模擬保守情境下的資產表現</div>
+      </div>
+      <div class="switch" id="stress"></div>
+    </div>
+  </section>
+
+  <!-- 計算結果 -->
+  <section class="section">
+    <div class="section-title">計算結果<span class="num">III.</span></div>
+    <div class="summary">
+      <div class="stat">
+        <div class="stat-label">原貸剩餘本金</div>
+        <div class="stat-value"><span id="mrem">—</span><span class="stat-unit">萬</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">增貸後產生的現金</div>
+        <div class="stat-value"><span id="mout">—</span><span class="stat-unit">萬</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">原房貸月付</div>
+        <div class="stat-value"><span id="mop">—</span><span class="stat-unit">元</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">增貸後月付</div>
+        <div class="stat-value"><span id="mrp">—</span><span class="stat-unit">元</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 情境比較 -->
+  <section class="section">
+    <div class="section-title">月現金流試算<span class="num">IV.</span></div>
+    <div class="calc-panel">
+      <div class="calc-inputs">
+        <div class="input-row">
+          <label>增貸後現金流</label>
+          <div class="input-box">
+            <input type="number" id="invAmount" value="" min="0" step="10">
+            <span class="unit">萬元</span>
+          </div>
+          <div class="input-hint" id="hint-cash">建議數值與「增貸後產生的現金」一致</div>
+        </div>
+        <div class="input-row">
+          <label>月配息率</label>
+          <div class="rate-group">
+            <button type="button" class="rate-btn" data-rate="6">6%</button>
+            <button type="button" class="rate-btn" data-rate="7">7%</button>
+            <button type="button" class="rate-btn active" data-rate="8">8%</button>
+            <button type="button" class="rate-btn" data-rate="9">9%</button>
+            <button type="button" class="rate-btn" data-rate="10">10%</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-output">
+        <div class="calc-line">
+          <span class="cl-label">月配息收入</span>
+          <span class="cl-value pos" id="divIncome">—</span>
+        </div>
+        <div class="calc-line">
+          <span class="cl-label">減 · 增貸後月付</span>
+          <span class="cl-value neg" id="payOut">—</span>
+        </div>
+        <div class="calc-line total">
+          <span class="cl-label">現在月現金流</span>
+          <span class="cl-value" id="netFlow">—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 房貸減壓比較 -->
+  <section class="section">
+    <div class="section-title">房貸減壓比較<span class="num">V.</span></div>
+    <div class="compare-panel">
+      <div class="compare-grid">
+        <div class="compare-side">
+          <div class="cs-label">不做增貸</div>
+          <div class="cs-rows">
+            <div class="cs-row">
+              <span class="cs-row-label">原房貸月付</span>
+              <span class="cs-num neg">− <span id="cmp-orig">—</span></span>
+            </div>
+            <div class="cs-row cs-spacer">&nbsp;</div>
+          </div>
+          <div class="cs-summary">
+            <div class="cs-summary-label">每月支出</div>
+            <div class="cs-summary-num" id="cmp-orig-total">—</div>
+          </div>
+        </div>
+
+        <div class="compare-side">
+          <div class="cs-label">做增貸 + 投資<span id="cmp-rate-tag"></span></div>
+          <div class="cs-rows">
+            <div class="cs-row">
+              <span class="cs-row-label">新房貸月付</span>
+              <span class="cs-num neg">− <span id="cmp-new">—</span></span>
+            </div>
+            <div class="cs-row">
+              <span class="cs-row-label">月配息收入</span>
+              <span class="cs-num pos">+ <span id="cmp-div">—</span></span>
+            </div>
+          </div>
+          <div class="cs-summary">
+            <div class="cs-summary-label">每月實際支出</div>
+            <div class="cs-summary-num" id="cmp-new-total">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="verdict neutral" id="verdict">
+        <div class="verdict-icon" id="verdict-icon">—</div>
+        <div class="verdict-body">
+          <div class="verdict-title" id="verdict-title">—</div>
+          <div class="verdict-detail" id="verdict-detail">—</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="disclaimer">
+      <div class="title-d">— 風險告知與免責聲明 —</div>
+      <p>一、本試算為單純財務模型,假設配息率於投資期間維持固定,但實務上配息標的之配息率將隨市場利率、發行人財務狀況、基金經理人決策而調整,不保證持續發放。</p>
+      <p>二、高配息標的(如月配息債券基金、特別股 ETF、REITs、高股息基金)經常包含「本金配息」結構,實際年化報酬率可能顯著低於名目配息率,投資人應檢視「配息組成」與「總報酬率」而非僅看配息率。</p>
+      <p>三、若投資標的為外幣計價,新台幣升貶將直接影響實際收益,匯損可能侵蝕配息收入。</p>
+      <p>四、房貸利率多為機動利率,於升息循環中月付金將隨之上升,而投資配息未必同步調整,將壓縮淨現金流。</p>
+      <p>五、以增貸資金投入投資存在「雙重風險」:若投資虧損且無力償還房貸,將面臨擔保品遭法拍之風險。請務必依自身風險承受度評估,並保留充足緊急預備金。</p>
+      <p>六、本試算結果不構成投資建議或承諾,實際投資前請完整閱讀標的公開說明書、信託契約並諮詢合格理財顧問。</p>
+    </div>
+    <div class="sign">
+      Prepared confidentially <span class="div">◆</span> For private review only
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const fmt = n => Math.round(n).toLocaleString('zh-TW');
+  const fmtSign = n => (n >= 0 ? '+' : '−') + Math.round(Math.abs(n)).toLocaleString('zh-TW');
+  const fmtW = n => (Math.round(n / 1000) / 10).toLocaleString('zh-TW', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+  const fmtWSign = n => (n >= 0 ? '+' : '−') + (Math.round(Math.abs(n) / 1000) / 10).toLocaleString('zh-TW', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + ' 萬';
+
+  let stressOn = false;
+  let selectedRate = 8;
+
+  function pmt(p, r, n) {
+    if (p <= 0 || n <= 0) return 0;
+    if (r === 0) return p / n;
+    return p * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1);
+  }
+  function remBalance(p, r, n, k) {
+    if (p <= 0 || n <= 0 || k >= n) return 0;
+    if (r === 0) return p * (1 - k/n);
+    return p * (Math.pow(1+r, n) - Math.pow(1+r, k)) / (Math.pow(1+r, n) - 1);
+  }
+
+  function calc() {
+    const ol = (+$('ol').value || 0) * 10000;
+    const orRate = (+$('or').value || 0) / 100 / 12;
+    const ot = (+$('ot').value || 0) * 12;
+    const yp = Math.min((+$('yp').value || 0) * 12, ot);
+    const refiTotal = (+$('cash').value || 0) * 10000;
+    let rrRateAnnual = (+$('rr').value || 0);
+    const rt = (+$('rt').value || 0) * 12;
+
+    if (stressOn) rrRateAnnual += 1;
+    const rrRate = rrRateAnnual / 100 / 12;
+
+    const remaining = remBalance(ol, orRate, ot, yp);
+    const cashOut = Math.max(0, refiTotal - remaining);
+    const origPmt = pmt(ol, orRate, ot);
+    const newPmt = pmt(refiTotal, rrRate, rt);
+
+    $('mrem').textContent = fmtW(remaining);
+    $('mout').textContent = fmtW(cashOut);
+    $('mop').textContent = fmt(origPmt);
+    $('mrp').textContent = fmt(newPmt);
+    $('livePmtOrig').textContent = fmt(origPmt);
+    $('livePmtNew').textContent = fmt(newPmt);
+
+    // 互動面板計算
+    const invAmount = (+$('invAmount').value || 0) * 10000;
+    const effectiveRate = stressOn ? selectedRate * 0.7 : selectedRate;
+    const divIncome = invAmount * (effectiveRate / 100) / 12;
+    const netFlow = divIncome - newPmt;
+
+    $('divIncome').textContent = '+ ' + fmt(divIncome);
+    $('payOut').textContent = '− ' + fmt(newPmt);
+    $('netFlow').textContent = (netFlow >= 0 ? '+ ' : '− ') + fmt(Math.abs(netFlow));
+    $('netFlow').className = 'cl-value ' + (netFlow >= 0 ? 'pos' : 'neg');
+    $('hint-cash').textContent = '增貸後產生的現金為 ' + fmtW(cashOut) + ' 萬,可手動調整投入金額';
+
+    // 房貸減壓比較
+    const withRefiBurden = newPmt - divIncome;
+    const reduction = origPmt - withRefiBurden;
+
+    $('cmp-orig').textContent = fmt(origPmt);
+    $('cmp-new').textContent = fmt(newPmt);
+    $('cmp-div').textContent = fmt(divIncome);
+    // 原房貸:固定是支出(deficit 棕紅色)
+    $('cmp-orig-total').textContent = '− ' + fmt(origPmt) + ' 元';
+    $('cmp-orig-total').className = 'cs-summary-num deficit';
+    // 增貸後:依結果顯示「-」(支出/棕紅)或「+」(結餘/綠色)
+    if (withRefiBurden > 0) {
+      $('cmp-new-total').textContent = '− ' + fmt(withRefiBurden) + ' 元';
+      $('cmp-new-total').className = 'cs-summary-num deficit';
+    } else {
+      $('cmp-new-total').textContent = '+ ' + fmt(Math.abs(withRefiBurden)) + ' 元';
+      $('cmp-new-total').className = 'cs-summary-num surplus';
+    }
+    $('cmp-rate-tag').textContent = '· 月配 ' + selectedRate + '%';
+
+    const verdict = $('verdict');
+    if (reduction > 100) {
+      verdict.className = 'verdict success';
+      $('verdict-icon').textContent = '✓';
+      $('verdict-title').textContent = '達成房貸減壓';
+      $('verdict-detail').textContent = '每月可省下 ' + fmt(reduction) + ' 元(配息超過月付差額)';
+    } else if (reduction < -100) {
+      verdict.className = 'verdict fail';
+      $('verdict-icon').textContent = '✗';
+      $('verdict-title').textContent = '未達成房貸減壓';
+      $('verdict-detail').textContent = '每月仍多支出 ' + fmt(Math.abs(reduction)) + ' 元(配息不足以覆蓋月付差額)';
+    } else {
+      verdict.className = 'verdict neutral';
+      $('verdict-icon').textContent = '=';
+      $('verdict-title').textContent = '損益接近平衡';
+      $('verdict-detail').textContent = '配息收入大致覆蓋月付差額,房貸負擔與原本相當';
+    }
+  }
+
+  document.querySelectorAll('input[type=number]').forEach(el => {
+    el.addEventListener('input', calc);
+    el.addEventListener('change', calc);
+  });
+
+  document.querySelectorAll('.rate-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      selectedRate = +this.dataset.rate;
+      calc();
+    });
+  });
+
+  $('stress').addEventListener('click', function() {
+    stressOn = !stressOn;
+    this.classList.toggle('on', stressOn);
+    calc();
+  });
+
+  calc();
+})();
+
+</script>
+
+</div>
+<!-- ============ /mainContent 結束 ============ -->
+
+<script>
+/* ========== 密碼保護邏輯 ========== */
+(function() {
+  // ⚠️ 密碼設定區 — 要改密碼請改這裡(↓ 引號內的值)
+  const PASSWORD = "1234";
+
+  // 連續錯誤多少次後鎖定
+  const MAX_TRIES = 5;
+  const LOCK_MINUTES = 5;
+  // 解鎖後記住多久(0 = 每次都要重新輸入,1 = 1 小時內免輸入)
+  const REMEMBER_HOURS = 0;
+  /* ========================================
+     使用說明:
+     1. 把上方 PASSWORD 改成你想要的密碼
+     2. 重新部署到 Vercel,30 秒後生效
+     3. 每次打開都需要重新輸入密碼
+     ======================================== */
+
+  const STORAGE_KEY = 'pwd_unlocked_at';
+  const TRIES_KEY = 'pwd_tries';
+  const LOCK_UNTIL_KEY = 'pwd_lock_until';
+  const HOUR_MS = 60 * 60 * 1000;
+  const MIN_MS = 60 * 1000;
+
+  const lockEl = document.getElementById('passwordLock');
+  const mainEl = document.getElementById('mainContent');
+  const inputEl = document.getElementById('pwdInput');
+  const submitEl = document.getElementById('pwdSubmit');
+  const messageEl = document.getElementById('pwdMessage');
+
+  // 檢查是否還在「已解鎖」期間
+  function isUnlocked() {
+    if (REMEMBER_HOURS <= 0) return false;
+    const unlockedAt = +localStorage.getItem(STORAGE_KEY) || 0;
+    return (Date.now() - unlockedAt) < REMEMBER_HOURS * HOUR_MS;
+  }
+
+  // 檢查是否被鎖定
+  function getLockRemaining() {
+    const lockUntil = +localStorage.getItem(LOCK_UNTIL_KEY) || 0;
+    const remaining = lockUntil - Date.now();
+    return remaining > 0 ? remaining : 0;
+  }
+
+  function unlock() {
+    localStorage.setItem(STORAGE_KEY, Date.now().toString());
+    localStorage.removeItem(TRIES_KEY);
+    lockEl.style.display = 'none';
+    mainEl.style.display = 'block';
+  }
+
+  function showMessage(msg, type) {
+    messageEl.textContent = msg;
+    messageEl.className = 'pwd-message ' + (type || '');
+  }
+
+  function tryPassword() {
+    // 先檢查是否被鎖
+    const lockMs = getLockRemaining();
+    if (lockMs > 0) {
+      const min = Math.ceil(lockMs / MIN_MS);
+      showMessage(`輸入次數過多,請於 ${min} 分鐘後再試`, 'error');
+      return;
+    }
+
+    const input = inputEl.value;
+    if (input === PASSWORD) {
+      unlock();
+    } else {
+      const tries = (+localStorage.getItem(TRIES_KEY) || 0) + 1;
+      localStorage.setItem(TRIES_KEY, tries.toString());
+
+      if (tries >= MAX_TRIES) {
+        const lockUntil = Date.now() + LOCK_MINUTES * MIN_MS;
+        localStorage.setItem(LOCK_UNTIL_KEY, lockUntil.toString());
+        localStorage.removeItem(TRIES_KEY);
+        showMessage(`密碼錯誤次數過多,已鎖定 ${LOCK_MINUTES} 分鐘`, 'error');
+      } else {
+        showMessage(`密碼錯誤,還有 ${MAX_TRIES - tries} 次機會`, 'error');
+      }
+      inputEl.value = '';
+      inputEl.focus();
+    }
+  }
+
+  // 啟動:已解鎖則直接顯示主內容
+  if (isUnlocked()) {
+    unlock();
+  } else {
+    submitEl.addEventListener('click', tryPassword);
+    inputEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') tryPassword();
+    });
+    // 自動聚焦
+    setTimeout(() => inputEl.focus(), 100);
+  }
+})();
+</script>
+
+</body>
+</html>
