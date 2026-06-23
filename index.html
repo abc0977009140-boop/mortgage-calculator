@@ -1,0 +1,5798 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 防止搜尋引擎收錄 -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="referrer" content="no-referrer">
+
+<title>房貸增貸資產配置試算</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&family=Noto+Serif+TC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #f7f4ec;
+    --bg-card: #fffdf7;
+    --bg-sunken: #efeadb;
+    --ink: #1f2924;
+    --ink-soft: #5a665e;
+    --ink-mute: #8a948c;
+    --line: #d9d2bf;
+    --line-soft: #e8e2cf;
+    --accent: #1e4d3a;
+    --accent-soft: #34715a;
+    --accent-bg: #e3ead0;
+    --warn: #8b3a1f;
+    --warn-bg: #f4e5d9;
+    --gold: #a8804b;
+    --y6: #8fb7c9;
+    --y7: #5b8fa8;
+    --y8: #2d6885;
+    --y9: #0d3a55;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 18px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 32px 16px 80px;
+  }
+
+  .page {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 28px 0 32px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .eyebrow {
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 21px;
+    font-style: italic;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 18px 0 0;
+    color: var(--gold);
+    font-size: 13px;
+  }
+  .ornament::before, .ornament::after {
+    content: "";
+    height: 1px;
+    width: 60px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  /* Notice */
+  .notice {
+    background: var(--warn-bg);
+    border-left: 3px solid var(--warn);
+    padding: 14px 18px;
+    margin-bottom: 32px;
+    border-radius: 2px;
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+  .notice strong {
+    color: var(--warn);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+  .section-title .num {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    color: var(--gold);
+    font-style: italic;
+    margin-left: auto;
+    letter-spacing: 0.1em;
+  }
+  /* 置中版標題 */
+  .section-title-center {
+    justify-content: center;
+    position: relative;
+  }
+  .section-title-center::before {
+    display: none;
+  }
+  .section-title-center .num {
+    position: absolute;
+    right: 0;
+    margin-left: 0;
+  }
+  .cycle-intro-center {
+    text-align: center;
+  }
+
+  /* Input panel */
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px 36px;
+    background: var(--bg-card);
+    padding: 22px 26px;
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+  }
+  /* 確保標籤永遠橫排不直排 */
+  .input-row label {
+    white-space: nowrap;
+  }
+  .input-row {
+    min-width: 0;  /* 允許 grid 子元素收縮 */
+  }
+  /* 手機/平板:768px 以下強制 1 欄 */
+  @media (max-width: 768px) {
+    .input-grid {
+      grid-template-columns: 1fr !important;
+      gap: 14px !important;
+      padding: 16px !important;
+    }
+    .payment-right {
+      grid-column: 1 !important;
+    }
+    .input-row label {
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      text-transform: none;
+      white-space: normal;  /* 手機允許換行,因為一欄寬度夠 */
+    }
+    .input-box input[type=number],
+    .input-box input[type=text] {
+      padding: 13px 14px;
+      font-size: 18px;
+    }
+    .input-box .unit { padding: 0 12px; font-size: 14px; }
+  }
+  /* 桌面平板過渡 */
+  @media (min-width: 769px) and (max-width: 900px) {
+    .input-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .payment-right {
+      grid-column: 2;
+    }
+  }
+  /* ========== 手機版整體優化(其他元件)========== */
+  @media (max-width: 560px) {
+    .page { padding: 14px; }
+    /* 摘要卡片改一欄全寬 */
+    .summary {
+      grid-template-columns: 1fr !important;
+      gap: 12px;
+    }
+    .stat { padding: 18px 20px; }
+    .stat-label { font-size: 15px; margin-bottom: 8px; }
+    .stat-value { font-size: 28px !important; }
+    .stat-unit { font-size: 15px; }
+    /* 配息率按鈕(6%-10%)字體放大可點 */
+    .rate-group { flex-wrap: wrap; }
+    .rate-btn { flex: 1 1 calc(20% - 4px); min-width: 56px; font-size: 14px; padding: 10px 0; }
+    /* 章節標題與副題 */
+    .section-title { font-size: 18px; }
+    .cycle-intro { font-size: 14px; line-height: 1.7; }
+    /* 計算面板 padding 縮減 */
+    .calc-panel { padding: 16px; }
+    .calc-inputs { grid-template-columns: 1fr; gap: 16px; }
+    /* 「一鍵帶入」按鈕改放下一行 */
+    .input-with-action { flex-direction: column; gap: 8px; }
+    .quick-fill-btn { width: 100%; padding: 10px; }
+    /* 客戶列在手機上重排 */
+    .client-bar { padding: 14px; }
+    .client-bar-row { flex-direction: column; align-items: stretch; gap: 10px; }
+    .client-bar-right { display: flex; gap: 8px; }
+    .client-bar-right .cb-btn { flex: 1; font-size: 13px; padding: 9px 10px; }
+    .client-select { font-size: 15px; }
+    /* 工具箱卡片 */
+    .toolbox-grid { gap: 14px; }
+    .tool-card { padding: 22px 20px; }
+    .tc-title { font-size: 21px; }
+    /* 房貸減壓比較與大水庫對比卡 → 直排 */
+    .compare-grid, .reduce-grid { grid-template-columns: 1fr !important; }
+    /* 信貸表格在手機已有 760px 設定,字級調整 */
+    .ct-head { display: none; }
+    .ct-row, .ct-total {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 10px;
+    }
+    .ct-row select, .ct-row input { padding: 9px 8px; font-size: 14px; }
+    /* 循環卡片內 3 格改 1 欄 */
+    .cycle-card-detail { grid-template-columns: 1fr !important; gap: 10px; }
+    .cd-value { font-size: 20px !important; }
+    /* footer 算式換行不擠 */
+    .cycle-card-footer { font-size: 13px; }
+    .cf-formula { line-height: 1.8; }
+    .cf-formula .cf-result { font-size: 17px; }
+    /* inline-payment 卡片(如「每6年自提總額」)防止文字被壓豎排 */
+    .inline-payment {
+      padding: 14px 16px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .inline-payment .lp-label { font-size: 14px; letter-spacing: 0.03em; white-space: nowrap; }
+    .inline-payment .lp-amount { font-size: 22px; white-space: nowrap; }
+    .inline-payment .lp-unit { font-size: 13px; }
+  }
+  .inline-payment {
+    background: linear-gradient(135deg, var(--accent-bg), transparent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+  }
+  .inline-payment .lp-label {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    font-weight: 500;
+    text-transform: none;
+  }
+  .inline-payment .lp-amount {
+    font-family: 'Inter', sans-serif;
+    font-size: 29px;
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .inline-payment .lp-unit {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-left: 4px;
+    font-weight: normal;
+  }
+  .inline-payment.warn {
+    background: linear-gradient(135deg, var(--warn-bg), transparent);
+    border-color: var(--warn);
+  }
+  .inline-payment.warn .lp-label { color: var(--warn); }
+  .inline-payment.warn .lp-amount { color: var(--warn); }
+  /* 月還款固定靠右(第 3 欄) */
+  .payment-right {
+    grid-column: 3;
+  }
+  .input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .input-row label {
+    font-size: 15px;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .input-box {
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    overflow: hidden;
+  }
+  .input-box:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-bg);
+  }
+  .input-box input[type=number],
+  .input-box input[type=text] {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 11px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--ink);
+    outline: none;
+    font-variant-numeric: tabular-nums;
+    -moz-appearance: textfield;
+  }
+  .input-box input[type=number]::-webkit-outer-spin-button,
+  .input-box input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .input-box .unit {
+    padding: 0 14px;
+    font-size: 16px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    border-left: 1px solid var(--line-soft);
+    background: var(--bg-sunken);
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+  }
+  .input-hint {
+    font-size: 14px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+
+  /* Toggle */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    margin-top: 14px;
+  }
+  .toggle-row .toggle-info {
+    flex: 1;
+  }
+  .toggle-row .toggle-title {
+    font-size: 16px;
+    color: var(--ink);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .toggle-row .toggle-desc {
+    font-size: 14px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+  }
+  .switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    background: var(--line);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .switch.on { background: var(--accent); }
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    background: var(--bg-card);
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .switch.on::after { transform: translateX(18px); }
+
+  /* Summary */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .stat {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    padding: 16px 18px;
+    border-radius: 4px;
+    position: relative;
+  }
+  .stat::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .stat-label {
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-transform: none;
+  }
+  .stat {
+    container-type: inline-size;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .stat-value {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(20px, 11cqi, 36px);
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+  .stat-unit {
+    font-size: 16px;
+    color: var(--ink-soft);
+    font-family: 'Noto Sans TC', sans-serif;
+    margin-left: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .stat-input {
+    flex: 1;
+    min-width: 0;
+    border: 1px dashed var(--gold);
+    border-radius: 4px;
+    background: rgba(168,128,75,0.06);
+    padding: 4px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+    max-width: 100%;
+  }
+  .stat-input:focus {
+    border-style: solid;
+    border-color: var(--accent);
+    background: #fff;
+  }
+  .stat-sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .stat-sub.positive { color: var(--accent); }
+  .stat-sub.negative { color: var(--warn); }
+
+  /* Calc panel */
+  .calc-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 24px 28px;
+  }
+  .calc-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px 36px;
+    margin-bottom: 26px;
+    padding-bottom: 22px;
+    border-bottom: 1px dashed var(--line-soft);
+  }
+  .rate-group {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+  }
+  .rate-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .rate-btn:hover {
+    background: var(--line-soft);
+    color: var(--ink);
+  }
+  .rate-btn.active {
+    background: var(--accent);
+    color: #fffdf7;
+  }
+  .calc-output {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .calc-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0;
+  }
+  .calc-line .cl-label {
+    color: var(--ink-soft);
+    font-size: 17px;
+    letter-spacing: 0.05em;
+  }
+  .calc-line .cl-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 21px;
+    font-variant-numeric: tabular-nums;
+  }
+  .calc-line.total {
+    padding: 16px 0 4px;
+    margin-top: 6px;
+    border-top: 1.5px solid var(--ink);
+  }
+  .calc-line.total .cl-label {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 500;
+    color: var(--ink);
+    font-size: 19px;
+    letter-spacing: 0.08em;
+  }
+  .calc-line.total .cl-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 34px;
+    font-weight: 600;
+  }
+
+  /* Scenarios */
+  .scenarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .scenario {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .scenario::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent-color);
+  }
+  .scenario[data-y="6"] { --accent-color: var(--y6); }
+  .scenario[data-y="7"] { --accent-color: var(--y7); }
+  .scenario[data-y="8"] { --accent-color: var(--y8); }
+  .scenario[data-y="9"] { --accent-color: var(--y9); }
+  .scenario-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--line-soft);
+  }
+  .scenario-rate {
+    font-family: 'Inter', sans-serif;
+    font-size: 27px;
+    font-weight: 600;
+    color: var(--accent-color);
+  }
+  .scenario-tag {
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+  .scenario-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+  .scenario-row .lbl {
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+  .scenario-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  .pos { color: var(--accent); }
+  .neg { color: var(--warn); }
+  .scenario-final {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .scenario-final .lbl {
+    font-size: 14px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    margin-bottom: 3px;
+  }
+  .scenario-final .val {
+    font-family: 'Inter', sans-serif;
+    font-size: 25px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Chart */
+  .chart-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 22px 24px 18px;
+  }
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 14px;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .chart-legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .chart-legend .dot {
+    display: inline-block;
+    width: 12px;
+    height: 2px;
+  }
+  .chart-canvas-wrap {
+    position: relative;
+    height: 320px;
+  }
+
+  /* Compare Panel */
+  .compare-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 26px 28px;
+  }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+  .compare-side {
+    padding: 20px 22px;
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+  }
+  .cs-label {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.12em;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--line);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .cs-label #cmp-rate-tag {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin-left: 4px;
+  }
+  .cs-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+    min-height: 64px;
+  }
+  .cs-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 16px;
+  }
+  .cs-row.cs-spacer { visibility: hidden; }
+  .cs-row-label {
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .cs-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .cs-summary {
+    padding-top: 14px;
+    border-top: 1.5px solid var(--ink);
+    text-align: center;
+  }
+  .cs-summary-label {
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .cs-summary-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 34px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .cs-summary-num.surplus { color: var(--accent); }
+  .cs-summary-num.deficit { color: var(--warn); }
+  .verdict {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 24px;
+    border-radius: 3px;
+    border: 1px solid;
+  }
+  .verdict.success {
+    background: var(--accent-bg);
+    border-color: var(--accent);
+  }
+  .verdict.fail {
+    background: var(--warn-bg);
+    border-color: var(--warn);
+  }
+  .verdict.neutral {
+    background: var(--bg-sunken);
+    border-color: var(--line);
+  }
+  .verdict-icon {
+    font-family: 'Inter', sans-serif;
+    font-size: 44px;
+    font-weight: 600;
+    line-height: 0.9;
+    width: 48px;
+    text-align: center;
+  }
+  .verdict.success .verdict-icon { color: var(--accent); }
+  .verdict.fail .verdict-icon { color: var(--warn); }
+  .verdict.neutral .verdict-icon { color: var(--ink-soft); }
+  .verdict-body { flex: 1; }
+  .verdict-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+  .verdict.success .verdict-title { color: var(--accent); }
+  .verdict.fail .verdict-title { color: var(--warn); }
+  .verdict.neutral .verdict-title { color: var(--ink); }
+  .verdict-detail {
+    font-size: 16px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .disclaimer {
+    font-size: 14px;
+    color: var(--ink-mute);
+    line-height: 1.85;
+    text-align: justify;
+  }
+  .disclaimer .title-d {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    letter-spacing: 0.1em;
+  }
+  .sign {
+    text-align: center;
+    margin-top: 32px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--ink-mute);
+    letter-spacing: 0.2em;
+  }
+  .sign .div {
+    display: inline-block;
+    margin: 0 8px;
+    color: var(--gold);
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; padding: 20px; }
+    .toggle-row { page-break-inside: avoid; }
+    .scenario, .stat { page-break-inside: avoid; }
+    .input-box { border: 1px solid #999; }
+    .input-box input[type=number] { color: #000; }
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 20px 12px 60px; font-size: 17px; }
+    .title { font-size: 31px; }
+    .stat-value { font-size: 25px; }
+    .scenario-rate { font-size: 23px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .cs-rows { min-height: auto; }
+    .cs-row.cs-spacer { display: none; }
+  }
+  /* ========== 客戶管理列 ========== */
+  .client-bar {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(31,41,36,0.04);
+  }
+  .client-bar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--line-soft);
+    margin-bottom: 16px;
+  }
+  .client-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 240px;
+  }
+  .client-bar-right {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .client-select-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .client-select {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 14px;
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+  .client-select:focus { border-color: var(--accent); }
+  .cb-btn {
+    padding: 9px 18px;
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .cb-btn:hover {
+    background: var(--bg-sunken);
+    border-color: var(--ink-soft);
+  }
+  .cb-btn-primary {
+    background: var(--accent);
+    color: #fffdf7;
+    border-color: var(--accent);
+  }
+  .cb-btn-primary:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-soft);
+  }
+  .cb-btn-danger {
+    color: var(--warn);
+    border-color: var(--warn-bg);
+  }
+  .cb-btn-danger:hover {
+    background: var(--warn-bg);
+    border-color: var(--warn);
+  }
+  .cb-btn-share {
+    color: #fff;
+    background: var(--gold);
+    border-color: var(--gold);
+    font-weight: 600;
+  }
+  .cb-btn-share:hover {
+    background: #8a6738;
+    border-color: #8a6738;
+    color: #fff;
+  }
+  .client-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 14px;
+  }
+  .ci-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ci-field label {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .ci-field input,
+  .ci-field textarea {
+    padding: 9px 12px;
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    outline: none;
+    resize: vertical;
+  }
+  .ci-field input:focus,
+  .ci-field textarea:focus {
+    border-color: var(--accent);
+    background: #fff;
+  }
+  .ci-field textarea {
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 42px;
+    line-height: 1.6;
+  }
+  .client-status {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--ink-mute);
+    min-height: 18px;
+  }
+  .client-status.success { color: var(--accent); font-weight: 500; }
+  .client-status.error { color: var(--warn); font-weight: 500; }
+  @media (max-width: 700px) {
+    .client-info { grid-template-columns: 1fr; }
+    .client-bar-right { width: 100%; }
+    .cb-btn { flex: 1; }
+  }
+
+  /* ===== 海外配息稅務優勢提示 ===== */
+  .tax-advantage-hint {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: rgba(30,77,58,0.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .tax-advantage-hint .tah-main {
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .tax-advantage-hint .tah-sub {
+    font-size: 11.5px;
+    color: var(--ink-mute);
+    line-height: 1.6;
+  }
+
+  /* 海外所得紅色強調條(放在 III 數字卡下方,讓客戶一眼看到) */
+  .oversea-tax-bar {
+    margin-top: 16px;
+    padding: 14px 20px;
+    text-align: center;
+    background: var(--warn-bg);
+    border: 1px solid var(--warn);
+    border-radius: 8px;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .oversea-tax-bar .otb-main {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--warn);
+    margin-bottom: 4px;
+  }
+  .oversea-tax-bar .otb-sub {
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--warn);
+    opacity: 0.82;
+  }
+  @media (max-width: 768px) {
+    .oversea-tax-bar { padding: 12px 14px; }
+    .oversea-tax-bar .otb-main { font-size: 13.5px; }
+    .oversea-tax-bar .otb-sub { font-size: 11px; }
+  }
+
+  /* 實價登錄查詢按鈕(房貸增貸 · 開官方網站新分頁) */
+  .lvr-lookup {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--line);
+  }
+  .lvr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 20px;
+    background: #fff;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+  }
+  .lvr-btn:hover { background: var(--accent); color: #fff; }
+  .lvr-note {
+    margin-top: 9px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11.5px;
+    line-height: 1.65;
+    color: var(--ink-mute);
+  }
+  @media (max-width: 768px) {
+    .lvr-btn { width: 100%; justify-content: center; }
+  }
+
+  /* 差異現金流 + 房貸繳完總共省繳(房貸減壓比較 V 區) */
+  .refi-savings {
+    margin-top: 16px;
+    padding: 16px 18px;
+    background: var(--accent-bg);
+    border-radius: 10px;
+  }
+  .refi-savings .rs-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 7px 0;
+  }
+  .refi-savings .rs-row.rs-total {
+    border-top: 1px dashed var(--accent-soft);
+    margin-top: 4px;
+    padding-top: 12px;
+  }
+  .refi-savings .rs-label {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .refi-savings .rs-total .rs-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .refi-savings .rs-value {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .refi-savings .rs-total .rs-value { font-size: 22px; }
+  .refi-savings .rs-value.pos { color: var(--accent); }
+  .refi-savings .rs-value.neg { color: var(--warn); }
+  .refi-savings .rs-note {
+    margin-top: 11px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--ink-mute);
+  }
+
+  /* 月配息商品 · 兩大優勢(海外所得 + 身故保險金) */
+  .dividend-perks {
+    margin-top: 16px;
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fffdf7;
+  }
+  .dividend-perks .dp-title {
+    background: var(--gold);
+    color: #fff;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 9px 16px;
+    text-align: center;
+  }
+  .dividend-perks .dp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .dividend-perks .dp-item {
+    display: flex;
+    gap: 11px;
+    padding: 15px 16px;
+    align-items: flex-start;
+  }
+  .dividend-perks .dp-item:first-child {
+    border-right: 1px dashed var(--line);
+  }
+  .dividend-perks .dp-icon {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    background: var(--accent-bg);
+  }
+  .dividend-perks .dp-main {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .dividend-perks .dp-sub {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--ink-mute);
+  }
+  @media (max-width: 768px) {
+    .dividend-perks .dp-grid { grid-template-columns: 1fr; }
+    .dividend-perks .dp-item:first-child {
+      border-right: none;
+      border-bottom: 1px dashed var(--line);
+    }
+  }
+
+  /* ========== 客戶模式:隱藏顧問專用功能 ========== */
+  /* 客戶輸入客戶密碼時加上 body.mode-client(僅顯示試算結果)*/
+  body.mode-client .all-clients,     /* 首頁:客戶快速查詢區塊 */
+  body.mode-client .home-divider,    /* 首頁:「或開始新試算」分隔線 */
+  body.mode-client .backup-bar,      /* 首頁:客戶資料備份區塊 */
+  body.mode-client .client-bar {     /* 每個工具:客戶管理列(儲存/新建/刪除/分享)*/
+    display: none !important;
+  }
+
+  /* ========== 分享 Toast ========== */
+  .share-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--accent);
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+  }
+  .share-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .share-toast.error { background: var(--warn); }
+
+  /* 客戶端進入時顯示的「分享資料已套用」橫條 */
+  .shared-banner {
+    background: linear-gradient(90deg, rgba(168,128,75,0.15), rgba(30,77,58,0.12));
+    border: 1px solid var(--gold);
+    border-left: 4px solid var(--gold);
+    border-radius: 6px;
+    padding: 14px 20px;
+    margin-bottom: 18px;
+    color: var(--accent);
+    font-size: 14px;
+    line-height: 1.65;
+    position: relative;
+  }
+  .shared-banner strong { color: var(--gold); font-weight: 700; }
+  .shared-banner-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-mute);
+    font-size: 16px;
+    padding: 4px 8px;
+  }
+
+  /* ========== 客戶模式覆寫(原本的隱藏規則) ========== */
+
+  /* ========== 密碼鎖畫面 ========== */
+  .pwd-lock {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .pwd-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 56px 48px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,41,36,0.08);
+  }
+  .pwd-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .pwd-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 31px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .pwd-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+  .pwd-ornament {
+    color: var(--gold);
+    font-size: 13px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .pwd-ornament::before, .pwd-ornament::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+  .pwd-ornament::before { right: calc(50% + 10px); }
+  .pwd-ornament::after { left: calc(50% + 10px); }
+  .pwd-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .pwd-form input {
+    border: 1px solid var(--line);
+    background: var(--bg);
+    padding: 14px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--ink);
+    border-radius: 3px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.2em;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .pwd-form input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+  .pwd-form button {
+    background: var(--accent);
+    color: #fffdf7;
+    border: none;
+    padding: 13px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s;
+  }
+  .pwd-form button:hover { background: var(--accent-soft); }
+  .pwd-message {
+    min-height: 20px;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+  }
+  .pwd-message.error { color: var(--warn); }
+  .pwd-footer {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink-mute);
+    letter-spacing: 0.15em;
+    padding-top: 24px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  /* ========== 分頁系統 ========== */
+  /* ========== 工具箱首頁 ========== */
+  .toolbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+    margin-bottom: 32px;
+  }
+  .tool-card {
+    text-align: left;
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+    padding: 28px 26px;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+    position: relative;
+  }
+  .tool-card[data-go]:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(31,41,36,0.12);
+    border-color: var(--accent);
+  }
+  .tc-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: #fffdf7;
+    margin-bottom: 20px;
+  }
+  .tc-icon-reservoir { background: linear-gradient(135deg, #1e4d3a, #2d6048); }
+  .tc-icon-mortgage { background: linear-gradient(135deg, #b06a3a, #c8804b); }
+  .tc-icon-credit { background: linear-gradient(135deg, #2d6048, #3a7a5c); }
+  .tc-icon-dividend { background: linear-gradient(135deg, #a8804b, #c8a062); }
+  .tc-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .tc-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 12px;
+    letter-spacing: 0.03em;
+  }
+  .tc-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    flex: 1;
+  }
+  .tc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .tc-tags span {
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: var(--bg-sunken);
+    border: 1px solid var(--line-soft);
+    border-radius: 20px;
+    padding: 4px 14px;
+    letter-spacing: 0.05em;
+  }
+  .tc-cta {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-soft);
+    letter-spacing: 0.05em;
+  }
+  .tc-arrow { transition: transform 0.18s; }
+  .tool-card[data-go]:hover .tc-arrow { transform: translateX(6px); }
+  /* 即將推出卡片 */
+  .tool-card-soon { opacity: 0.62; cursor: default; }
+  .tc-cta-soon {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink-mute);
+    padding-top: 16px;
+    border-top: 1px solid var(--line-soft);
+    letter-spacing: 0.05em;
+  }
+  /* 返回工具箱 */
+  /* ========== 備份區 ========== */
+  .backup-bar {
+    margin-top: 40px;
+    padding: 24px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+  }
+  .backup-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .backup-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+  .backup-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .backup-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #fff;
+    color: var(--ink);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .backup-btn:hover {
+    background: var(--bg-sunken);
+    border-color: var(--accent);
+  }
+  .backup-btn-export {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .backup-btn-export:hover {
+    background: #143a2b;
+    color: #fff;
+  }
+  .backup-btn-append {
+    background: var(--gold);
+    color: #fff;
+    border-color: var(--gold);
+  }
+  .backup-btn-append:hover {
+    background: #8a6738;
+    color: #fff;
+  }
+  .backup-status {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    min-height: 18px;
+  }
+  .backup-status.success { color: var(--accent); font-weight: 500; }
+  .backup-status.error { color: var(--warn); font-weight: 500; }
+  /* ========== /備份區 ========== */
+
+  /* ========== 客戶快速查詢 ========== */
+  .all-clients {
+    margin-top: 0;
+    margin-bottom: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+    padding: 24px 26px;
+  }
+  .ac-header { margin-bottom: 14px; }
+  .ac-title {
+    margin: 0;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+  }
+  /* 大下拉選單 */
+  .ac-search-big { margin-bottom: 0; }
+  .ac-select {
+    width: 100%;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    background: var(--bg);
+    outline: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><path fill='%23999' d='M7 10L2 5h10z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 42px;
+  }
+  .ac-select:focus {
+    border-color: var(--accent);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+  /* 首頁分隔線 */
+  .home-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 28px 0 18px;
+    color: var(--ink-mute);
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+  }
+  .home-divider::before, .home-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line-soft);
+  }
+
+  /* ========== 規劃選擇彈窗 ========== */
+  .picker-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(31,41,36,0.55);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+  }
+  .picker-box {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 28px 28px 22px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .picker-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .picker-name {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 18px;
+    letter-spacing: 0.05em;
+  }
+  .picker-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .picker-btn {
+    text-align: left;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--bg);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .picker-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+    color: var(--accent);
+  }
+  .picker-btn .pb-arrow { color: var(--gold); font-size: 18px; }
+  .picker-cancel {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    padding: 8px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+  }
+  .picker-cancel:hover { color: var(--accent); }
+  @media (max-width: 560px) {
+    .all-clients { padding: 18px 18px; }
+    .ac-title { font-size: 19px; }
+    .ac-select { padding: 12px 14px; font-size: 15px; padding-right: 36px; }
+    .home-divider { font-size: 12px; margin: 22px 0 14px; }
+    .picker-box { padding: 22px 22px 18px; }
+    .picker-name { font-size: 21px; }
+    .picker-btn { font-size: 15px; padding: 12px 14px; }
+  }
+
+  /* 返回工具箱 */
+  .back-to-home {
+    background: var(--accent);
+    border: none;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fffdf7;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+    box-shadow: 0 2px 6px rgba(30,77,58,0.2);
+  }
+  .back-to-home:hover { background: var(--accent-soft); transform: translateX(-2px); }
+  .topbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-sunken);
+    padding: 5px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    border: 1px solid var(--line-soft);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px 18px;
+    background: transparent;
+    border: none;
+    font-family: 'Inter', 'Noto Serif TC', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 4px;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fffdf7;
+    box-shadow: 0 2px 6px rgba(30,77,58,0.25);
+  }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ========== 配息率按鈕列 ========== */
+  .rate-row {
+    margin-top: 18px;
+    padding: 16px 22px;
+    background: var(--bg-card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .rate-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.08em;
+  }
+  .rate-buttons {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    min-width: 280px;
+  }
+  .rate-buttons .rate-btn {
+    flex: 1;
+    padding: 10px 0;
+    background: var(--bg);
+    border: 1.5px solid var(--line);
+    border-radius: 3px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .rate-buttons .rate-btn:hover {
+    border-color: var(--accent-soft);
+    color: var(--ink);
+  }
+  .rate-buttons .rate-btn.active {
+    background: var(--accent);
+    color: #fffdf7;
+    border-color: var(--accent);
+  }
+
+  /* ========== 六年循環時間軸 ========== */
+  .cycle-intro {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+  .cycle-timeline {
+    position: relative;
+    padding-left: 48px;
+  }
+  .cycle-timeline::before {
+    content: "";
+    position: absolute;
+    left: 17px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    background: var(--gold);
+    opacity: 0.3;
+  }
+  .cycle-item {
+    position: relative;
+    margin-bottom: 18px;
+  }
+  .cycle-item:last-child { margin-bottom: 0; }
+  .cycle-num {
+    position: absolute;
+    left: -48px;
+    top: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: #fffdf7;
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 4px var(--bg);
+    z-index: 1;
+  }
+  .cycle-card {
+    background: linear-gradient(135deg, #eeece6 0%, #e6e3dc 100%);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 22px;
+    color: var(--ink);
+    box-shadow: 0 2px 8px rgba(31,41,36,0.06);
+  }
+  .cycle-card-head {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+  .cycle-card-period {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+  .cycle-card-detail {
+    background: rgba(255,255,255,0.55);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .cd-row { text-align: center; }
+  .cd-label {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+  .cd-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 23px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .cd-value.gold { color: var(--gold); }
+  .cd-value.white { color: var(--ink); }
+  .cd-edit-hint {
+    display: inline-block;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(30,77,58,0.1);
+    border-radius: 3px;
+    padding: 1px 6px;
+    margin-left: 4px;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+  }
+  .self-edit, .dv-contrib-edit, .dv-extra-edit {
+    width: 100%;
+    max-width: 160px;
+    text-align: center;
+    border: 1px dashed var(--gold);
+    border-radius: 4px;
+    background: rgba(168,128,75,0.06);
+    padding: 4px 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 23px;
+    font-weight: 600;
+    color: var(--gold);
+    outline: none;
+    font-variant-numeric: tabular-nums;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .self-edit:focus, .dv-contrib-edit:focus, .dv-extra-edit:focus {
+    border-style: solid;
+    border-color: var(--accent);
+    background: #fff;
+    color: var(--ink);
+  }
+  .cycle-card-footer {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .cf-formula {
+    font-size: 14px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+  }
+  .cf-formula b {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .cf-formula .cf-op {
+    color: var(--gold);
+    margin: 0 2px;
+    font-weight: 600;
+  }
+  .cf-formula .cf-result {
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .cf-left { font-weight: 600; color: var(--ink); }
+  .cycle-card-footer .cf-amount {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 19px;
+  }
+  .cf-right { white-space: nowrap; }
+  .cf-right .cf-amount { color: var(--gold); }
+  @media (max-width: 700px) {
+    .cycle-card-footer { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 600px) {
+    .cycle-card-detail { grid-template-columns: 1fr; gap: 10px; }
+  }
+
+  /* ========== 信用貸款表格 ========== */
+  .credit-table {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .ct-head, .ct-row, .ct-total {
+    display: grid;
+    grid-template-columns: 1.2fr 1.4fr 0.9fr 1.2fr 0.7fr 1.3fr;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 14px;
+  }
+  .ct-head {
+    background: var(--accent);
+    color: #fffdf7;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .ct-row {
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--bg-card);
+  }
+  .ct-row:nth-child(even) { background: var(--bg-sunken); }
+  .ct-row select, .ct-row input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 7px 8px;
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+  .ct-row input:focus, .ct-row select:focus { border-color: var(--accent); }
+  .ct-pay {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--warn);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .ct-total {
+    background: var(--accent-bg);
+    font-family: 'Inter', 'Noto Serif TC', serif;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 15px;
+  }
+  .ct-total span:nth-child(2), .ct-total span:last-child {
+    font-family: 'Inter', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 17px;
+  }
+  .ct-total span:last-child { text-align: right; color: var(--warn); }
+  .cr-accent-num { color: var(--accent) !important; }
+  .cr-warn-num { color: var(--warn) !important; }
+  .cr-gold-num { color: var(--gold) !important; }
+  .ct-pay-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .ct-del {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    color: var(--ink-mute);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ct-del:hover { background: var(--warn); color: #fff; border-color: var(--warn); }
+  .cr-add-btn {
+    margin-top: 14px;
+    width: 100%;
+    padding: 12px;
+    background: var(--bg-card);
+    border: 1.5px dashed var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+  }
+  .cr-add-btn:hover { background: var(--accent-bg); }
+  /* 大小水庫:投入紀錄表(2 欄)*/
+  .rsv-head, .ct-rows .rsv-row, .rsv-total {
+    display: grid;
+    grid-template-columns: 0.7fr 1.6fr;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 14px;
+  }
+  .rsv-row { border-bottom: 1px solid var(--line-soft); background: var(--bg-card); position: relative; }
+  .rsv-row:nth-child(even) { background: var(--bg-sunken); }
+  .rsv-row input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 7px 8px;
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+  .rsv-row input:focus { border-color: var(--accent); }
+  .rsv-row .ct-del {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .rsv-idx {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 15px;
+    text-align: center;
+  }
+  @media (max-width: 760px) {
+    .rsv-head { display: none; }
+    .ct-rows .rsv-row, .rsv-total {
+      grid-template-columns: 1fr;
+      gap: 6px 10px;
+    }
+  }
+
+  /* 配息退休:投入紀錄表(4 欄)*/
+  .dv-head, .ct-rows .dv-row, .dv-total {
+    display: grid;
+    grid-template-columns: 0.7fr 1.6fr 1.4fr;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 14px;
+  }
+  .dv-row { border-bottom: 1px solid var(--line-soft); background: var(--bg-card); }
+  .dv-row:nth-child(even) { background: var(--bg-sunken); }
+  .dv-row input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 7px 8px;
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+  .dv-row input:focus { border-color: var(--accent); }
+  .dv-idx {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 15px;
+    text-align: center;
+  }
+  @media (max-width: 760px) {
+    .dv-head { display: none; }
+    .ct-rows .dv-row, .dv-total {
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 10px;
+    }
+  }
+
+  /* 房貸附加格(只在資金來源=房貸時出現)*/
+  .ct-mortgage-extra {
+    background: var(--accent-bg);
+    border-top: 1px dashed var(--accent);
+    padding: 12px 14px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .ct-mx-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .ct-mx-label {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .ct-mx-field input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    background: #fff;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+  .ct-mx-field input:focus { border-color: var(--accent); }
+  .ct-mx-readonly {
+    padding: 7px 10px;
+    background: rgba(168,128,75,0.08);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 760px) {
+    .ct-mortgage-extra { grid-template-columns: 1fr; }
+  }
+  /* ===== 信貸:第三階段(房貸還完後) ===== */
+  .stage3-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .stage3-icon {
+    color: var(--gold);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .stage3-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  /* ===== /信貸第三階段 ===== */
+
+  /* ===== 遺產稅試算器 ===== */
+  .estate-calc {
+    margin-top: 28px;
+    padding: 26px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+  }
+  .ec-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--accent);
+  }
+  .ec-title-text {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .ec-title-badge {
+    background: var(--gold);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .ec-desc {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--bg-sunken);
+    border-radius: 6px;
+    border-left: 3px solid var(--gold);
+  }
+  .ec-desc a { color: var(--accent); text-decoration: underline; }
+  .ec-desc strong { color: var(--ink); font-weight: 600; }
+
+  .ec-step { margin-bottom: 22px; }
+  .ec-step-head {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ec-step-head small {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    color: var(--ink-mute);
+    font-size: 13px;
+  }
+  .ec-step-head small a { color: var(--accent); text-decoration: underline; }
+
+  .ec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .ec-field label {
+    display: block;
+    font-size: 13.5px;
+    color: var(--ink);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .ec-input {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .ec-input input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    outline: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .ec-input input:focus { background: var(--accent-bg); }
+  .ec-input span {
+    padding: 0 12px;
+    color: var(--ink-mute);
+    font-size: 14px;
+    background: var(--bg-sunken);
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+  }
+  .ec-field small {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--ink-mute);
+    line-height: 1.55;
+  }
+  .ec-field small a { color: var(--accent); text-decoration: underline; }
+
+  .ec-deductions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .ec-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    cursor: pointer;
+    background: #fff;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .ec-check:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .ec-check input { width: 18px; height: 18px; cursor: pointer; }
+  .ec-check-label { flex: 1; font-size: 14px; }
+  .ec-check-amt { color: var(--gold); font-weight: 600; font-size: 13px; }
+
+  .ec-num {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .ec-num-label { flex: 1; font-size: 14px; }
+  .ec-num input {
+    width: 60px;
+    text-align: center;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 6px 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .ec-num input:focus { background: var(--accent-bg); outline: none; }
+  .ec-num-unit { font-size: 13px; color: var(--ink-mute); }
+  .ec-num-fixed { background: var(--bg-sunken); }
+  .ec-num-fixed-val { color: var(--gold); font-weight: 600; font-size: 14px; }
+
+  .ec-result-step {
+    background: var(--accent-bg);
+    padding: 20px 22px;
+    border-radius: 8px;
+    border: 1px solid var(--accent-soft);
+  }
+  .ec-result-table {
+    background: #fff;
+    border-radius: 6px;
+    padding: 14px 20px;
+    margin-bottom: 14px;
+  }
+  .ec-result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 15px;
+  }
+  .ec-result-row + .ec-result-row { border-top: 1px solid var(--line-soft); }
+  .ec-rr-label { color: var(--ink-soft); }
+  .ec-rr-value {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    font-size: 16px;
+  }
+  .ec-result-row.ec-deduct .ec-rr-value { color: var(--ink-mute); }
+  .ec-result-row.ec-net {
+    background: var(--bg-sunken);
+    margin: 6px -20px;
+    padding: 12px 20px;
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+  }
+  .ec-result-row.ec-net .ec-rr-label { color: var(--ink); font-weight: 600; }
+  .ec-result-row.ec-net .ec-rr-value { color: var(--gold); font-size: 20px; }
+  .ec-result-row.ec-tax .ec-rr-label { color: var(--warn); font-weight: 600; font-size: 16px; }
+  .ec-result-row.ec-tax .ec-rr-value { color: var(--warn); font-size: 22px; font-weight: 700; }
+
+  .ec-conclusion {
+    text-align: center;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 16px;
+    border-radius: 6px;
+    margin-top: 14px;
+  }
+  .ec-conclusion.no-tax {
+    background: rgba(30,77,58,0.1);
+    color: var(--accent);
+    border: 1px solid var(--accent-soft);
+  }
+  .ec-conclusion.need-tax {
+    background: rgba(139,58,31,0.08);
+    color: var(--warn);
+    border: 1px solid rgba(139,58,31,0.3);
+  }
+  .ec-tax-rate-note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(168,128,75,0.08);
+    border-left: 3px solid var(--gold);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    border-radius: 4px;
+    line-height: 1.6;
+  }
+  .ec-tax-rate-note a { color: var(--accent); text-decoration: underline; }
+
+  .ec-sources {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+  }
+  .ec-sources-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .ec-sources-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .ec-source-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    text-decoration: none;
+    background: #fff;
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+  .ec-source-link:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(30,77,58,0.1);
+  }
+  .ec-src-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+  .ec-src-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .ec-src-name {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .ec-src-desc {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 760px) {
+    .ec-grid, .ec-deductions, .ec-sources-grid { grid-template-columns: 1fr; }
+    .estate-calc { padding: 20px 16px; }
+    .ec-title-text { font-size: 19px; }
+  }
+  /* ===== /遺產稅試算器 ===== */
+
+  /* ===== 房貸增貸:繼承規劃補充 ===== */
+  .inherit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 18px;
+  }
+  .inherit-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 22px 22px;
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .inherit-before { border-color: var(--line); }
+  .inherit-after {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(30,77,58,0.04) 0%, var(--bg-card) 60%);
+  }
+  /* 情境舉例徽章 */
+  .ic-example-badge {
+    align-self: flex-start;
+    background: var(--ink-mute);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+  .ic-example-badge-gold {
+    background: var(--gold);
+  }
+  .ic-head {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--line-soft);
+    width: 100%;
+  }
+  .inherit-after .ic-head { color: var(--accent); }
+  .ic-asset {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+  }
+  .ic-asset-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+  .inherit-before .ic-asset-icon { background: var(--gold); }
+  .ic-asset-name {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .ic-asset-name small {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    color: var(--ink-soft);
+    font-size: 12px;
+  }
+  .ic-asset-pair {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  /* 上下層堆疊(增貸活化)*/
+  .ic-asset-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    margin: 8px 0;
+  }
+  .ic-asset-cash, .ic-asset-house {
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: rgba(30,77,58,0.06);
+    border: 1px dashed var(--accent-soft);
+    width: 100%;
+    margin: 0;
+  }
+  .ic-asset-cash {
+    border-color: var(--gold);
+    background: rgba(168,128,75,0.08);
+  }
+  .ic-icon-cash {
+    background: var(--gold) !important;
+    font-size: 24px !important;
+  }
+  .ic-stack-flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    color: var(--accent);
+  }
+  .ic-stack-arrow {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--gold);
+  }
+  .ic-stack-label {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  /* 不規劃側:免稅額提示 */
+  .ic-tax-hint {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: rgba(30,77,58,0.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+    text-align: left;
+    width: 100%;
+  }
+  .ic-tax-hint strong {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .ic-tax-hint small {
+    font-size: 11.5px;
+    color: var(--ink-mute);
+  }
+  .ic-plus {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: 'Inter', sans-serif;
+  }
+  .ic-arrow {
+    margin: 16px 0 12px;
+    font-size: 14px;
+    color: var(--ink-mute);
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .ic-result {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg-sunken);
+    border-radius: 6px;
+  }
+  .ic-result-highlight {
+    background: rgba(30,77,58,0.08);
+    border: 1px solid var(--accent-soft);
+  }
+  .ic-result-label {
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .ic-result-value {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .inherit-after .ic-result-value { color: var(--accent); }
+  .ic-result-note {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .inherit-concept {
+    margin-top: 24px;
+    padding: 22px 26px;
+    background: var(--bg-card);
+    border: 1px solid var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+  }
+  .ic-concept-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .ic-concept-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ic-concept-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .ic-concept-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .ic-concept-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+  .ic-concept-text strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .inherit-note {
+    margin-top: 18px;
+    padding: 14px 18px;
+    background: rgba(139,58,31,0.04);
+    border: 1px solid rgba(139,58,31,0.15);
+    border-left: 3px solid var(--warn);
+    border-radius: 4px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+  .inherit-note strong {
+    color: var(--warn);
+    font-weight: 600;
+  }
+  @media (max-width: 760px) {
+    .inherit-grid { grid-template-columns: 1fr; }
+    .ic-asset-pair { flex-direction: column; gap: 10px; }
+    .ic-plus { transform: rotate(90deg); }
+  }
+  /* ===== /繼承規劃補充 ===== */
+
+  /* 信貸風險提示 */
+  .credit-risk {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn);
+    border-left: 4px solid var(--warn);
+    border-radius: 8px;
+    padding: 22px 26px;
+  }
+  .cr-risk-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--warn);
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+  }
+  .cr-risk-list {
+    margin: 0 0 14px;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cr-risk-list li {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  .cr-risk-list b { color: var(--warn); font-weight: 700; }
+  .cr-risk-foot {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    padding-top: 14px;
+    border-top: 1px dashed var(--warn);
+    font-style: italic;
+  }
+  @media (max-width: 760px) {
+    .ct-head { display: none; }
+    .ct-row, .ct-total {
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 10px;
+    }
+  }
+
+  /* 一鍵帶入按鈕 */
+  .input-with-action {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .input-with-action .input-box { flex: 1; }
+  .quick-fill-btn {
+    padding: 0 18px;
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gold);
+    background: var(--bg-card);
+    border: 1.5px solid var(--gold);
+    border-radius: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+  }
+  .quick-fill-btn:hover {
+    background: var(--gold);
+    color: #fffdf7;
+  }
+  .quick-fill-btn:active {
+    transform: scale(0.97);
+  }
+  .quick-fill-btn.flash {
+    animation: flashGold 0.6s ease;
+  }
+  @keyframes flashGold {
+    0%   { background: var(--gold); color: #fffdf7; }
+    100% { background: var(--bg-card); color: var(--gold); }
+  }
+
+  /* ========== 大水庫生效對比 ========== */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .compare-card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .compare-card.cc-yes {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--accent-bg), var(--bg-card));
+  }
+  .compare-card.cc-no {
+    border-color: var(--line);
+    background: var(--bg-sunken);
+  }
+  .cc-header {
+    padding: 16px 22px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .cc-yes .cc-header { border-bottom-color: rgba(30,77,58,0.2); }
+  .cc-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .cc-yes .cc-tag { color: var(--accent); }
+  .cc-name {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+  }
+  .cc-yes .cc-name { color: var(--accent); }
+  .cc-body {
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+  }
+  .cc-label {
+    font-size: 15px;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+  .cc-sub {
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-left: 2px;
+  }
+  .cc-urgent {
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--warn);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    border-left: 3px solid var(--warn);
+    padding-left: 10px;
+  }
+  .cc-row-emphasis {
+    background: rgba(168,128,75,0.1);
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin: 2px -10px;
+  }
+  .cc-row-emphasis2 {
+    background: rgba(30,77,58,0.08);
+    border-radius: 4px;
+    padding: 10px;
+    margin: 2px -10px;
+    flex-wrap: wrap;
+  }
+  .cc-row-emphasis2 .cc-label { flex-shrink: 1; }
+  .cc-value.cc-accent { color: var(--accent); font-size: 20px; }
+  .cc-row-emphasis2 .cc-sub {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-left: 0;
+  }
+  .cc-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 23px;
+    font-weight: 700;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .cc-value.cc-highlight {
+    font-size: 26px;
+    color: var(--accent);
+  }
+  .cc-value.cc-warn {
+    font-size: 26px;
+    color: var(--warn);
+  }
+  .cc-value.cc-gold { color: var(--gold); }
+  .cc-value.cc-note {
+    font-size: 13px;
+    color: var(--ink-mute);
+    font-weight: normal;
+    font-style: italic;
+  }
+  .compare-verdict {
+    margin-top: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+    color: #fffdf7;
+    border-radius: 8px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 14px rgba(30,77,58,0.2);
+  }
+  .cv-icon {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gold);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .cv-body { flex: 1; }
+  .cv-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .cv-desc {
+    font-size: 15px;
+    color: rgba(255,253,247,0.85);
+    line-height: 1.7;
+  }
+  .cv-desc strong {
+    color: var(--gold);
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    margin: 0 2px;
+  }
+  @media (max-width: 700px) {
+    .compare-grid { grid-template-columns: 1fr; }
+    .compare-verdict { flex-direction: column; text-align: center; gap: 12px; }
+  }
+
+
+</style>
+</head>
+
+<body>
+
+<!-- ============ 密碼鎖畫面 ============ -->
+<div id="passwordLock" class="pwd-lock">
+  <div class="pwd-card">
+    <div class="pwd-eyebrow">Confidential Access</div>
+    <h1 class="pwd-title">受保護內容</h1>
+    <div class="pwd-subtitle">Please enter password to continue</div>
+    <div class="pwd-ornament">◆</div>
+    <div class="pwd-form">
+      <input type="password" id="pwdInput" placeholder="請輸入密碼" autocomplete="off" autofocus>
+      <button type="button" id="pwdSubmit">解鎖</button>
+    </div>
+    <div class="pwd-message" id="pwdMessage"></div>
+    <div class="pwd-footer">For private review only · 內容僅供受邀者使用</div>
+  </div>
+</div>
+
+<!-- ============ 主內容容器(密碼正確後才顯示) ============ -->
+<div id="mainContent" style="display:none;">
+<div class="page">
+
+  <!-- 右上角返回工具箱(進入工具後顯示)-->
+  <div class="topbar" id="topbar" style="display:none;">
+    <button type="button" class="back-to-home" id="backToHome">← 返回理財工具箱</button>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="eyebrow">Wealth Blueprint</div>
+    <h1 class="title">財富藍圖試算</h1>
+    <div class="subtitle">理財 · 累積資產 · 退休規劃</div>
+    <div class="ornament">◆</div>
+  </header>
+
+  <!-- Notice -->
+  <div class="notice">
+    <strong>· 機密 CONFIDENTIAL ·</strong>
+    本試算僅供您與本顧問內部討論使用,所有數字為情境假設模型,並非投資承諾或保證收益。實際結果受利率、配息穩定度、匯率與標的淨值變化影響。請於決策前完整閱讀末頁風險說明。
+  </div>
+
+  <!-- ============ 工具箱首頁 ============ -->
+  <div id="home-view">
+    <!-- 客戶快速查詢(下拉式)-->
+    <div class="all-clients" id="allClients">
+      <div class="ac-header">
+        <h2 class="ac-title">客戶快速查詢</h2>
+      </div>
+      <div class="ac-search-big">
+        <select id="ac_select" class="ac-select">
+          <option value="">— 選擇客戶查看規劃 —</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="home-divider"><span>或開始新試算</span></div>
+
+    <div class="toolbox-grid">
+      <!-- 房貸增貸 -->
+      <button type="button" class="tool-card" data-go="mortgage">
+        <div class="tc-icon tc-icon-mortgage">⌂</div>
+        <div class="tc-eyebrow">活化不動產</div>
+        <div class="tc-title">房貸增貸試算</div>
+        <div class="tc-desc">已有房貸者透過增貸活化現金,投資領配息,試算減壓與現金流效益。</div>
+        <div class="tc-tags"><span>增貸規劃</span><span>轉貸比較</span><span>本息攤還</span></div>
+        <div class="tc-cta">開始使用 <span class="tc-arrow">→</span></div>
+      </button>
+
+      <!-- 信用貸款 -->
+      <button type="button" class="tool-card" data-go="credit">
+        <div class="tc-icon tc-icon-credit">▤</div>
+        <div class="tc-eyebrow">純試算 · 整合負債</div>
+        <div class="tc-title">信用貸款試算</div>
+        <div class="tc-desc">整合自備款、信貸、基金平台貸等多筆資金,試算投資配息現金流與滿7年後的財富走向。</div>
+        <div class="tc-tags"><span>資金整合</span><span>本息攤還</span><span>配息分析</span></div>
+        <div class="tc-cta">開始使用 <span class="tc-arrow">→</span></div>
+      </button>
+
+      <!-- 配息退休規劃 -->
+      <button type="button" class="tool-card" data-go="dividend">
+        <div class="tc-icon tc-icon-dividend">💰</div>
+        <div class="tc-eyebrow">資產活化 · 退休現金流</div>
+        <div class="tc-title">配息退休規劃</div>
+        <div class="tc-desc">把現金、儲蓄險投入月配息商品,配息再滾入小水庫,試算 N 年後總資產與每月可領。</div>
+        <div class="tc-tags"><span>資產配置</span><span>月配息</span><span>退休規劃</span></div>
+        <div class="tc-cta">開始使用 <span class="tc-arrow">→</span></div>
+      </button>
+    </div>
+
+    <!-- 備份區 -->
+    <div class="backup-bar">
+      <div class="backup-title">客戶資料備份</div>
+      <div class="backup-desc">所有客戶資料儲存在此瀏覽器中。換電腦、清快取、換瀏覽器前,請務必匯出備份。</div>
+      <div class="backup-actions">
+        <button type="button" class="backup-btn backup-btn-export" id="backup_export">📦 匯出全部備份</button>
+        <label class="backup-btn backup-btn-import">
+          📥 還原備份
+          <input type="file" id="backup_import" accept=".json" style="display:none;">
+        </label>
+        <label class="backup-btn backup-btn-append">
+          ➕ 追加匯入客戶
+          <input type="file" id="backup_append" accept=".json" style="display:none;">
+        </label>
+      </div>
+      <div class="backup-status" id="backup_status"></div>
+    </div>
+  </div>
+
+  <!-- 選擇規劃彈窗(客戶有多個規劃時顯示)-->
+  <div class="picker-mask" id="pickerMask" style="display:none;">
+    <div class="picker-box">
+      <div class="picker-title">選擇要查看的規劃</div>
+      <div class="picker-name" id="picker_name">—</div>
+      <div class="picker-list" id="picker_list"></div>
+      <button type="button" class="picker-cancel" id="picker_cancel">取消</button>
+    </div>
+  </div>
+
+  <!-- ============ 工具區(點卡片後顯示)============ -->
+  <div id="tool-view" style="display:none;">
+
+  <!-- 分頁切換 -->
+  <div class="tabs">
+    <button type="button" class="tab-btn active" data-tab="mortgage">房貸增貸試算</button>
+    <button type="button" class="tab-btn" data-tab="credit">信用貸款試算</button>
+    <button type="button" class="tab-btn" data-tab="dividend">配息退休規劃</button>
+  </div>
+
+  <!-- ============ Tab 1: 房貸增貸 ============ -->
+  <div class="tab-pane active" id="tab-mortgage">
+
+  <!-- 客戶管理列(房貸)-->
+  <div class="client-bar">
+    <div class="client-bar-row">
+      <div class="client-bar-left">
+        <label class="client-select-label">房貸客戶檔案</label>
+        <select id="mort_clientSelect" class="client-select">
+          <option value="">— 新試算(未儲存) —</option>
+        </select>
+      </div>
+      <div class="client-bar-right">
+        <button type="button" class="cb-btn cb-btn-primary" id="mort_btnSave">儲存目前資料</button>
+        <button type="button" class="cb-btn" id="mort_btnNew">新建客戶</button>
+        <button type="button" class="cb-btn cb-btn-share" id="mort_btnShare" title="複製分享網址,給客戶看您填好的試算">🔗 複製分享連結</button>
+        <button type="button" class="cb-btn cb-btn-danger" id="mort_btnDelete">刪除</button>
+      </div>
+    </div>
+    <div class="client-info">
+      <div class="ci-field">
+        <label>客戶姓名</label>
+        <input type="text" id="ciName" placeholder="" autocomplete="off">
+      </div>
+    </div>
+    <div class="client-status" id="mort_status"></div>
+  </div>
+
+  <!-- 原房貸 -->
+  <section class="section">
+    <div class="section-title">原房貸資訊<span class="num">I.</span></div>
+    <div class="input-grid">
+      <div class="input-row">
+        <label>原始貸款金額</label>
+        <div class="input-box">
+          <input type="number" id="ol" value="" min="0" step="10">
+          <span class="unit">萬元</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>原貸款利率</label>
+        <div class="input-box">
+          <input type="number" id="or" value="" min="0" step="0.05">
+          <span class="unit">%</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>原貸款年限</label>
+        <div class="input-box">
+          <input type="number" id="ot" value="" min="1" step="1">
+          <span class="unit">年</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>已繳納年數</label>
+        <div class="input-box">
+          <input type="number" id="yp" value="" min="0" step="1">
+          <span class="unit">年</span>
+        </div>
+      </div>
+      <div class="input-row inline-payment payment-right">
+        <span class="lp-label">每月還款金額</span>
+        <span class="lp-amount"><span id="livePmtOrig">—</span><span class="lp-unit">元 / 月</span></span>
+      </div>
+    </div>
+
+    <div class="lvr-lookup">
+      <a class="lvr-btn" href="https://lvr.land.moi.gov.tw/" target="_blank" rel="noopener noreferrer">🔍 查詢實價登錄成交價</a>
+      <div class="lvr-note">開啟內政部不動產交易實價查詢服務網(官方,每月 1／11／21 日更新)。成交價僅供區域行情參考,實際增貸額度以銀行鑑價為準。</div>
+    </div>
+  </section>
+
+  <!-- 增貸 -->
+  <section class="section">
+    <div class="section-title">增貸條件設定<span class="num">II.</span></div>
+    <div class="input-grid">
+      <div class="input-row">
+        <label>增貸總額</label>
+        <div class="input-box">
+          <input type="number" id="cash" value="" min="0" step="10">
+          <span class="unit">萬元</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>增貸利率</label>
+        <div class="input-box">
+          <input type="number" id="rr" value="" min="0" step="0.05">
+          <span class="unit">%</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>增貸年限</label>
+        <div class="input-box">
+          <input type="number" id="rt" value="" min="1" step="1">
+          <span class="unit">年</span>
+        </div>
+      </div>
+      <div class="input-row inline-payment warn payment-right">
+        <span class="lp-label">增貸後每月還款</span>
+        <span class="lp-amount"><span id="livePmtNew">—</span><span class="lp-unit">元 / 月</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 計算結果 -->
+  <section class="section">
+    <div class="section-title">計算結果<span class="num">III.</span></div>
+    <div class="summary">
+      <div class="stat">
+        <div class="stat-label">原貸剩餘本金</div>
+        <div class="stat-value"><span id="mrem">—</span><span class="stat-unit">萬</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">增貸後產生的現金</div>
+        <div class="stat-value"><span id="mout">—</span><span class="stat-unit">萬</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">原房貸月付</div>
+        <div class="stat-value"><span id="mop">—</span><span class="stat-unit">元</span></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">增貸後月付</div>
+        <div class="stat-value"><span id="mrp">—</span><span class="stat-unit">元</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 情境比較 -->
+  <section class="section">
+    <div class="section-title">月現金流試算<span class="num">IV.</span></div>
+    <div class="calc-panel">
+      <div class="calc-inputs">
+        <div class="input-row">
+          <label>增貸後現金流</label>
+          <div class="input-with-action">
+            <div class="input-box">
+              <input type="number" id="invAmount" value="" min="0" step="10">
+              <span class="unit">萬元</span>
+            </div>
+            <button type="button" class="quick-fill-btn" id="quickFillCash" title="一鍵帶入增貸後產生的現金">⚡ 一鍵帶入</button>
+          </div>
+          <div class="input-hint" id="hint-cash">建議數值與「增貸後產生的現金」一致</div>
+        </div>
+        <div class="input-row">
+          <label>月配息率</label>
+          <div class="rate-group">
+            <button type="button" class="rate-btn" data-rate="6">6%</button>
+            <button type="button" class="rate-btn" data-rate="7">7%</button>
+            <button type="button" class="rate-btn active" data-rate="8">8%</button>
+            <button type="button" class="rate-btn" data-rate="9">9%</button>
+            <button type="button" class="rate-btn" data-rate="10">10%</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-output">
+        <div class="calc-line">
+          <span class="cl-label">月配息收入</span>
+          <span class="cl-value pos" id="divIncome">—</span>
+        </div>
+        <div class="calc-line">
+          <span class="cl-label">減 · 增貸後月付</span>
+          <span class="cl-value neg" id="payOut">—</span>
+        </div>
+        <div class="calc-line total">
+          <span class="cl-label">現在月現金流</span>
+          <span class="cl-value" id="netFlow">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dividend-perks">
+      <div class="dp-title">月配息商品 · 兩大優勢</div>
+      <div class="dp-grid">
+        <div class="dp-item">
+          <div class="dp-icon">💰</div>
+          <div class="dp-body">
+            <div class="dp-main">海外配息所得 · 不計入綜合所得稅</div>
+            <div class="dp-sub">依現行稅法不列入綜所稅;海外所得逾 100 萬另適用最低稅負制,基本所得免稅額 750 萬。</div>
+          </div>
+        </div>
+        <div class="dp-item">
+          <div class="dp-icon">🛡️</div>
+          <div class="dp-body">
+            <div class="dp-main">身故保險金 · 留給指定受益人</div>
+            <div class="dp-sub">具壽險保障,可指定受益人;身故給付依保單條款(保額或帳戶價值較高者)為準,不等同保證本金。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 房貸減壓比較 -->
+  <section class="section">
+    <div class="section-title">房貸減壓比較<span class="num">V.</span></div>
+    <div class="compare-panel">
+      <div class="compare-grid">
+        <div class="compare-side">
+          <div class="cs-label">不做增貸</div>
+          <div class="cs-rows">
+            <div class="cs-row">
+              <span class="cs-row-label">原房貸月付</span>
+              <span class="cs-num neg">− <span id="cmp-orig">—</span></span>
+            </div>
+            <div class="cs-row cs-spacer">&nbsp;</div>
+          </div>
+          <div class="cs-summary">
+            <div class="cs-summary-label">每月支出</div>
+            <div class="cs-summary-num" id="cmp-orig-total">—</div>
+          </div>
+        </div>
+
+        <div class="compare-side">
+          <div class="cs-label">做增貸 + 投資<span id="cmp-rate-tag"></span></div>
+          <div class="cs-rows">
+            <div class="cs-row">
+              <span class="cs-row-label">新房貸月付</span>
+              <span class="cs-num neg">− <span id="cmp-new">—</span></span>
+            </div>
+            <div class="cs-row">
+              <span class="cs-row-label">月配息收入</span>
+              <span class="cs-num pos">+ <span id="cmp-div">—</span></span>
+            </div>
+          </div>
+          <div class="cs-summary">
+            <div class="cs-summary-label">每月實際支出</div>
+            <div class="cs-summary-num" id="cmp-new-total">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="verdict neutral" id="verdict">
+        <div class="verdict-icon" id="verdict-icon">—</div>
+        <div class="verdict-body">
+          <div class="verdict-title" id="verdict-title">—</div>
+          <div class="verdict-detail" id="verdict-detail">—</div>
+        </div>
+      </div>
+
+      <div class="refi-savings">
+        <div class="rs-row">
+          <span class="rs-label">差異現金流(每月)</span>
+          <span class="rs-value" id="rs-monthly">—</span>
+        </div>
+        <div class="rs-row rs-total">
+          <span class="rs-label">房貸繳完總共省繳</span>
+          <span class="rs-value" id="rs-total">—</span>
+        </div>
+        <div class="rs-note" id="rs-note">以原貸剩餘年限與增貸年限分別計算,兩情境各自繳到底的總現金流相減。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 資產活化 · 繼承規劃補充 -->
+  <section class="section">
+    <div class="section-title">資產活化 · 繼承規劃補充<span class="num">VI.</span></div>
+    <div class="cycle-intro">透過房貸增貸把房屋資產活化進入保單,可同時保留房產與壽險保障,讓資產做雙重規劃。<br><strong style="color:var(--gold);">📌 以下以「房產 1,000 萬」為情境舉例,實際金額依客戶情況評估。</strong></div>
+
+    <div class="inherit-grid">
+      <!-- 左:不規劃 -->
+      <div class="inherit-card inherit-before">
+        <div class="ic-example-badge">情境舉例</div>
+        <div class="ic-head">不規劃 · 單純持有房產</div>
+        <div class="ic-asset">
+          <div class="ic-asset-icon">⌂</div>
+          <div class="ic-asset-name">房子(1,000 萬)</div>
+        </div>
+        <div class="ic-arrow">↓ 身故繼承時</div>
+        <div class="ic-result">
+          <div class="ic-result-label">遺產基數</div>
+          <div class="ic-result-value">1,000 萬</div>
+          <div class="ic-result-note">全額計入遺產,稅務空間有限</div>
+        </div>
+        <div class="ic-tax-hint">
+          ✓ 遺產稅免稅額 <strong>1,333 萬</strong> 內不列入遺產稅<br>
+          <small>適用於 115 年(2026)現行標準</small>
+        </div>
+      </div>
+
+      <!-- 右:增貸活化 -->
+      <div class="inherit-card inherit-after">
+        <div class="ic-example-badge ic-example-badge-gold">情境舉例</div>
+        <div class="ic-head">增貸活化 · 房產 + 保單雙資產</div>
+        <div class="ic-asset-pair">
+          <div class="ic-asset">
+            <div class="ic-asset-icon">⌂</div>
+            <div class="ic-asset-name">房子(1,000 萬)<br><small>仍是您的</small></div>
+          </div>
+          <div class="ic-plus">＋</div>
+          <div class="ic-asset">
+            <div class="ic-asset-icon">◆</div>
+            <div class="ic-asset-name">保單身故金(1,000 萬)<br><small>指定受益人</small></div>
+          </div>
+        </div>
+        <div class="ic-arrow">↓ 身故繼承時</div>
+        <div class="ic-result ic-result-highlight">
+          <div class="ic-result-label">資產規劃</div>
+          <div class="ic-result-value">房產 + 壽險</div>
+          <div class="ic-result-note">負債部分可從遺產扣除,壽險身故金有規劃空間</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 核心概念 -->
+    <div class="inherit-concept">
+      <div class="ic-concept-title">一棟房子 → 兩棟房子的概念</div>
+      <div class="ic-concept-list">
+        <div class="ic-concept-item">
+          <div class="ic-concept-num">1</div>
+          <div class="ic-concept-text"><strong>房子依舊在您名下</strong> ── 繳完房貸後房子價值仍在,最後同樣留給孩子繼承</div>
+        </div>
+        <div class="ic-concept-item">
+          <div class="ic-concept-num">2</div>
+          <div class="ic-concept-text"><strong>多了一份壽險保障</strong> ── 增貸金額投入保單,身故時保險公司給付身故金給指定受益人</div>
+        </div>
+        <div class="ic-concept-item">
+          <div class="ic-concept-num">3</div>
+          <div class="ic-concept-text"><strong>負債可從遺產扣除</strong> ── 依《遺產及贈與稅法》規定,被繼承人未償債務可從遺產總額扣除,壓縮應稅遺產基數</div>
+        </div>
+        <div class="ic-concept-item">
+          <div class="ic-concept-num">4</div>
+          <div class="ic-concept-text"><strong>壽險身故金的規劃空間</strong> ── 依《保險法第 112 條》與《遺產及贈與稅法第 16 條》,指定受益人的人壽保險金於符合規定條件下,有不計入遺產之規劃空間</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="inherit-note">
+      <strong>合規提醒</strong>:遺產稅實際課稅有「實質課稅原則」考量。
+    </div>
+
+
+  </section>
+
+  </div>
+  <!-- ============ /Tab 1: 房貸增貸 結束 ============ -->
+
+
+
+  <!-- ============ Tab 3: 信用貸款 ============ -->
+  <div class="tab-pane" id="tab-credit">
+
+    <!-- 客戶管理列(信貸)-->
+    <div class="client-bar">
+      <div class="client-bar-row">
+        <div class="client-bar-left">
+          <label class="client-select-label">信貸客戶檔案</label>
+          <select id="crc_clientSelect" class="client-select">
+            <option value="">— 新試算(未儲存) —</option>
+          </select>
+        </div>
+        <div class="client-bar-right">
+          <button type="button" class="cb-btn cb-btn-primary" id="crc_btnSave">儲存目前資料</button>
+          <button type="button" class="cb-btn" id="crc_btnNew">新建客戶</button>
+          <button type="button" class="cb-btn cb-btn-share" id="crc_btnShare" title="複製分享網址,給客戶看您填好的試算">🔗 複製分享連結</button>
+          <button type="button" class="cb-btn cb-btn-danger" id="crc_btnDelete">刪除</button>
+        </div>
+      </div>
+      <div class="client-info">
+        <div class="ci-field">
+          <label>客戶姓名</label>
+          <input type="text" id="crcName" placeholder="" autocomplete="off">
+        </div>
+      </div>
+      <div class="client-status" id="crc_status"></div>
+    </div>
+
+    <!-- I. 資金來源配置 -->
+    <section class="section">
+      <div class="section-title">資金來源配置<span class="num">I.</span></div>
+      <div class="cycle-intro">整合各筆資金來源,系統自動計算每月償還金額。金額以「元」為單位。選擇「房貸」時會自動展開「原貸餘額」與「增貸後現金流」欄位。</div>
+
+      <div class="credit-table">
+        <div class="ct-head">
+          <span>資金來源</span>
+          <span>金額(元)</span>
+          <span>利率(%)</span>
+          <span>還款方式</span>
+          <span>年限</span>
+          <span>月償還</span>
+        </div>
+        <div class="ct-rows" id="creditRows">
+          <!-- JS 動態生成 -->
+        </div>
+        <div class="ct-total">
+          <span>合計投入金額</span>
+          <span id="cr_totalInvest">—</span>
+          <span></span>
+          <span></span>
+          <span>月償還合計</span>
+          <span id="cr_totalPay">—</span>
+        </div>
+      </div>
+      <button type="button" class="cr-add-btn" id="cr_addRow">＋ 新增資金來源</button>
+    </section>
+
+    <!-- II. 投資配息分析 -->
+    <section class="section">
+      <div class="section-title">投資配息分析<span class="num">II.</span></div>
+      <div class="cycle-intro">投入金額拿去投資,依不同年配息率,試算每月現金流與七年累積。</div>
+
+      <div class="input-row" style="margin-bottom:18px;">
+        <label>年配息率</label>
+        <div class="rate-group" id="cr_rateGroup">
+          <button type="button" class="rate-btn" data-rate="6">6%</button>
+          <button type="button" class="rate-btn" data-rate="7">7%</button>
+          <button type="button" class="rate-btn active" data-rate="8">8%</button>
+          <button type="button" class="rate-btn" data-rate="9">9%</button>
+          <button type="button" class="rate-btn" data-rate="10">10%</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- III. 第一階段走向(動態:七年/房貸期間)-->
+    <section class="section" id="cr_stage1_section">
+      <div class="section-title"><span id="cr_stage1_title">七年內財富走向</span><span class="num">III.</span></div>
+      <div class="cycle-intro" id="cr_stage1_intro">信貸攤還期間,每月配息扣除償還後的淨現金流。</div>
+
+      <div class="summary">
+        <div class="stat">
+          <div class="stat-label">月配息收入</div>
+          <div class="stat-value cr-accent-num"><span id="cr_a_div">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" id="cr_a_pay_label">每月償還</div>
+          <div class="stat-value cr-warn-num"><span id="cr_a_pay">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">每月淨現金流</div>
+          <div class="stat-value cr-gold-num"><span id="cr_a_net">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" id="cr_a_total7_label">7年累積現金流</div>
+          <div class="stat-value"><span id="cr_a_total7" class="cr-gold-num">—</span><span class="stat-unit">元</span></div>
+        </div>
+      </div>
+
+      <div class="dividend-perks">
+        <div class="dp-title">月配息商品 · 兩大優勢</div>
+        <div class="dp-grid">
+          <div class="dp-item">
+            <div class="dp-icon">💰</div>
+            <div class="dp-body">
+              <div class="dp-main">海外配息所得 · 不計入綜合所得稅</div>
+              <div class="dp-sub">依現行稅法不列入綜所稅;海外所得逾 100 萬另適用最低稅負制,基本所得免稅額 750 萬。</div>
+            </div>
+          </div>
+          <div class="dp-item">
+            <div class="dp-icon">🛡️</div>
+            <div class="dp-body">
+              <div class="dp-main">身故保險金 · 留給指定受益人</div>
+              <div class="dp-sub">具壽險保障,可指定受益人;身故給付依保單條款(保額或帳戶價值較高者)為準,不等同保證本金。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IV. 第二階段走向(動態:七年後/房貸還完後)-->
+    <section class="section" id="cr_stage2_section">
+      <div class="section-title"><span id="cr_stage2_title">滿七年後財富走向</span><span class="num">IV.</span></div>
+      <div class="cycle-intro" id="cr_stage2_intro">信貸(本金+利息)七年攤還完畢後,僅剩只還息的負債,每月可領的現金流提升。</div>
+
+      <div class="summary">
+        <div class="stat">
+          <div class="stat-label">月配息收入</div>
+          <div class="stat-value cr-accent-num"><span id="cr_f_div">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" id="cr_f_pay_label">每月只還息</div>
+          <div class="stat-value cr-warn-num"><span id="cr_f_pay">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">預估每月可領</div>
+          <div class="stat-value cr-gold-num"><span id="cr_f_net">—</span><span class="stat-unit">元</span></div>
+        </div>
+      </div>
+
+      <!-- 第三階段:房貸還完後(僅情境 A:有信貸+有房貸 顯示) -->
+      <div id="cr_stage3_wrap" style="display:none;margin-top:24px;padding-top:20px;border-top:1px dashed var(--line);">
+        <div class="stage3-head">
+          <span class="stage3-icon">↓</span>
+          <span class="stage3-title" id="cr_stage3_title">房貸還完後(滿 30 年)</span>
+        </div>
+        <div class="cycle-intro" id="cr_stage3_intro">房貸攤還完畢後,房子完整為您所有,僅剩只還息的負債,每月可領大幅提升。</div>
+        <div class="summary">
+          <div class="stat">
+            <div class="stat-label">月配息收入</div>
+            <div class="stat-value cr-accent-num"><span id="cr_g_div">—</span><span class="stat-unit">元</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">每月只還息</div>
+            <div class="stat-value cr-warn-num"><span id="cr_g_pay">—</span><span class="stat-unit">元</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">預估每月可領</div>
+            <div class="stat-value cr-gold-num"><span id="cr_g_net">—</span><span class="stat-unit">元</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 房貸獨有情境:房子+保單壽險提示 -->
+      <div class="ic-tax-hint" id="cr_dual_asset_hint" style="display:none;margin-top:16px;">
+        ✓ <strong>房子 + 保單壽險 雙資產規劃</strong>:房貸還完後房子完整為您所有,投資累積的配息與保單身故金,可同時保留房產與壽險保障。
+      </div>
+    </section>
+
+    <!-- IV. 保守淨值與預估損益 -->
+    <section class="section">
+      <div class="section-title">保守淨值 · 預估損益<span class="num">V.</span></div>
+      <div class="cycle-intro">假設市場波動下,淨值可能低於投入本金。請選擇假設情境(100% 不跌、90% 小跌、80% 大跌),扣除良性負債後加計七年累積,推估整體損益。</div>
+
+      <div class="rate-row" style="margin-bottom:14px;">
+        <span class="rate-label">市場假設淨值</span>
+        <div class="rate-buttons" id="cr_nv_group">
+          <button type="button" class="rate-btn" data-nv="100">100%(不跌)</button>
+          <button type="button" class="rate-btn" data-nv="90">90%(小跌)</button>
+          <button type="button" class="rate-btn active" data-nv="80">80%(大跌)</button>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="stat">
+          <div class="stat-label">保守淨值(<span id="cr_nvPct">80</span>%)</div>
+          <div class="stat-value"><span id="cr_netValue">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">良性負債</div>
+          <div class="stat-value cr-warn-num"><span id="cr_goodDebt">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">預估損益</div>
+          <div class="stat-value cr-gold-num"><span id="cr_profit">—</span><span class="stat-unit">元</span></div>
+        </div>
+      </div>
+
+      <div class="io-verdict" id="cr_verdict" style="margin-top:18px;">
+        <span id="cr_verdictText">—</span>
+      </div>
+    </section>
+
+    <!-- 信貸風險提示 -->
+    <section class="section">
+      <div class="credit-risk">
+        <div class="cr-risk-title">⚠ 風險提示</div>
+        <ul class="cr-risk-list">
+          <li>以上試算僅提供參考,不代表任何投資建議。</li>
+          <li>投資有風險,盈虧自負。</li>
+        </ul>
+        <div class="cr-risk-foot">免責聲明:本工具為財務情境模型,所有數字均為試算假設,實際結果以市場狀況為準。</div>
+      </div>
+    </section>
+
+  </div>
+  <!-- ============ /Tab 3: 信用貸款 結束 ============ -->
+
+  <!-- ============ Tab 4: 配息退休規劃 ============ -->
+  <div class="tab-pane" id="tab-dividend">
+
+    <!-- 客戶管理列(配息退休)-->
+    <div class="client-bar">
+      <div class="client-bar-row">
+        <div class="client-bar-left">
+          <label class="client-select-label">配息退休客戶檔案</label>
+          <select id="dvc_clientSelect" class="client-select">
+            <option value="">— 新試算(未儲存) —</option>
+          </select>
+        </div>
+        <div class="client-bar-right">
+          <button type="button" class="cb-btn cb-btn-primary" id="dvc_btnSave">儲存目前資料</button>
+          <button type="button" class="cb-btn" id="dvc_btnNew">新建客戶</button>
+          <button type="button" class="cb-btn cb-btn-share" id="dvc_btnShare" title="複製分享網址,給客戶看您填好的試算">🔗 複製分享連結</button>
+          <button type="button" class="cb-btn cb-btn-danger" id="dvc_btnDelete">刪除</button>
+        </div>
+      </div>
+      <div class="client-info">
+        <div class="ci-field">
+          <label>客戶姓名</label>
+          <input type="text" id="dvcName" placeholder="" autocomplete="off">
+        </div>
+      </div>
+      <div class="client-status" id="dvc_status"></div>
+    </div>
+
+    <!-- I. 現有資產盤點 -->
+    <section class="section">
+      <div class="section-title">現有資產盤點<span class="num">I.</span></div>
+      <div class="cycle-intro">先盤點客戶可動用的資產(只列出不算複利成長)。</div>
+
+      <div class="input-grid">
+        <div class="input-row">
+          <label>目前年齡</label>
+          <div class="input-box"><input type="number" id="dv_age" value="" min="0" step="1" placeholder=""><span class="unit">歲</span></div>
+        </div>
+        <div class="input-row">
+          <label>目標退休年齡</label>
+          <div class="input-box"><input type="number" id="dv_retire" value="" min="0" step="1" placeholder=""><span class="unit">歲</span></div>
+        </div>
+        <div class="input-row">
+          <label>現金(銀行存款)</label>
+          <div class="input-box"><input type="text" inputmode="numeric" id="dv_cash" value="" placeholder=""><span class="unit">元</span></div>
+        </div>
+        <div class="input-row">
+          <label>儲蓄險(可解約金額)</label>
+          <div class="input-box"><input type="text" inputmode="numeric" id="dv_saving" value="" placeholder=""><span class="unit">元</span></div>
+        </div>
+        <div class="input-row">
+          <label>房子資產</label>
+          <div class="input-box"><input type="text" inputmode="numeric" id="dv_house" value="" placeholder=""><span class="unit">元</span></div>
+        </div>
+        <div class="input-row">
+          <label>股票</label>
+          <div class="input-box"><input type="text" inputmode="numeric" id="dv_stock" value="" placeholder=""><span class="unit">元</span></div>
+        </div>
+        <div class="input-row">
+          <label>其他資產</label>
+          <div class="input-box"><input type="text" inputmode="numeric" id="dv_other" value="" placeholder=""><span class="unit">元</span></div>
+        </div>
+        <div class="input-row inline-payment payment-right">
+          <span class="lp-label">可動用資產合計</span>
+          <span class="lp-amount"><span id="dv_assets">—</span><span class="lp-unit">元</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- II. 投入月配息商品(多筆)-->
+    <section class="section">
+      <div class="section-title">投入月配息商品<span class="num">II.</span></div>
+      <div class="cycle-intro">客戶分批投入大水庫的金額,可新增多筆(第一筆、第二筆、之後再加第三筆…)。所有投入加總為總大水庫本金。</div>
+
+      <div class="credit-table">
+        <div class="ct-head dv-head">
+          <span>項次</span>
+          <span>投入金額(元)</span>
+          <span>每月配息</span>
+        </div>
+        <div class="ct-rows" id="dv_investRows">
+          <!-- JS 動態生成 -->
+        </div>
+        <div class="ct-total dv-total">
+          <span>合計總投入</span>
+          <span id="dv_totalInvest">—</span>
+          <span id="dv_totalMonthly">—</span>
+        </div>
+      </div>
+      <button type="button" class="cr-add-btn" id="dv_addRow">＋ 新增投入紀錄</button>
+
+      <!-- 月配息率切換 -->
+      <div class="rate-row" style="margin-top:18px;">
+        <span class="rate-label">月配息商品 · 年配息率</span>
+        <div class="rate-buttons" id="dv_rate_group">
+          <button type="button" class="rate-btn" data-rate="6">6%</button>
+          <button type="button" class="rate-btn" data-rate="7">7%</button>
+          <button type="button" class="rate-btn active" data-rate="8">8%</button>
+          <button type="button" class="rate-btn" data-rate="9">9%</button>
+          <button type="button" class="rate-btn" data-rate="10">10%</button>
+        </div>
+      </div>
+
+      <div class="summary" style="margin-top:18px;">
+        <div class="stat">
+          <div class="stat-label">大水庫本金合計</div>
+          <div class="stat-value cr-accent-num"><span id="dv_s_principal">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">每月配息</div>
+          <div class="stat-value cr-gold-num"><span id="dv_s_monthly2">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">每年配息</div>
+          <div class="stat-value cr-gold-num"><span id="dv_s_yearly">—</span><span class="stat-unit">元</span></div>
+        </div>
+      </div>
+
+      <div class="dividend-perks">
+        <div class="dp-title">月配息商品 · 兩大優勢</div>
+        <div class="dp-grid">
+          <div class="dp-item">
+            <div class="dp-icon">💰</div>
+            <div class="dp-body">
+              <div class="dp-main">海外配息所得 · 不計入綜合所得稅</div>
+              <div class="dp-sub">依現行稅法不列入綜所稅;海外所得逾 100 萬另適用最低稅負制,基本所得免稅額 750 萬。</div>
+            </div>
+          </div>
+          <div class="dp-item">
+            <div class="dp-icon">🛡️</div>
+            <div class="dp-body">
+              <div class="dp-main">身故保險金 · 留給指定受益人</div>
+              <div class="dp-sub">具壽險保障,可指定受益人;身故給付依保單條款(保額或帳戶價值較高者)為準,不等同保證本金。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- III. 循環滾動試算 -->
+    <section class="section">
+      <div class="section-title section-title-center">循環滾動試算<span class="num">III.</span></div>
+      <div class="cycle-intro cycle-intro-center">月配息提撥到小水庫累積,每滿一輪倒回大水庫,水位節節攀升。客戶可自選每月提撥金額(不必把月配息全投入)。</div>
+
+      <!-- 循環年數(同時決定用哪張保單)-->
+      <div class="rate-row">
+        <span class="rate-label">循環年數</span>
+        <div class="rate-buttons" id="dv_cycle_group">
+          <button type="button" class="rate-btn active" data-cy="6">6 年一輪 · 美金分紅保單</button>
+          <button type="button" class="rate-btn" data-cy="10">10 年一輪 · 定期定額基金</button>
+          <button type="button" class="rate-btn" data-cy="0">單純月配息(不滾存)</button>
+        </div>
+      </div>
+
+      <!-- 假設報酬率(僅 10 年顯示)-->
+      <div class="rate-row" id="dv_a_rate_wrap" style="display:none;">
+        <span class="rate-label">定期定額基金 · 假設報酬率</span>
+        <div class="rate-buttons" id="dv_a_rate_group">
+          <button type="button" class="rate-btn active" data-rate="6">6%</button>
+          <button type="button" class="rate-btn" data-rate="7">7%</button>
+          <button type="button" class="rate-btn" data-rate="8">8%</button>
+          <button type="button" class="rate-btn" data-rate="9">9%</button>
+          <button type="button" class="rate-btn" data-rate="10">10%</button>
+        </div>
+      </div>
+
+      <!-- 循環卡片列表 -->
+      <div class="cycles-list" id="dv_cycles_list">
+        <div class="cycle-intro" style="text-align:center;padding:20px;">請於上方填入大水庫本金與年齡資料,即可產生循環試算</div>
+      </div>
+    </section>
+
+    <!-- IV. 退休時財富藍圖 -->
+    <section class="section">
+      <div class="section-title">退休時財富藍圖<span class="num">IV.</span></div>
+      <div class="cycle-intro">經過循環滾動到退休年齡,大水庫累積的最終狀況與每月可領。</div>
+
+      <div class="summary">
+        <div class="stat">
+          <div class="stat-label">完成輪數</div>
+          <div class="stat-value"><span id="dv_cycles_count">—</span><span class="stat-unit">輪</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">退休時大水庫總額</div>
+          <div class="stat-value cr-accent-num"><span id="dv_total">—</span><span class="stat-unit">元</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">退休時每月可領</div>
+          <div class="stat-value cr-gold-num"><span id="dv_retire_monthly">—</span><span class="stat-unit">元/月</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">退休時壽險保障(<span id="dv_lifeAge">—</span> 歲)</div>
+          <div class="stat-value cr-warn-num"><span id="dv_life">—</span></div>
+        </div>
+      </div>
+
+      <div class="io-verdict" style="margin-top:18px;">
+        <span id="dv_verdictText">—</span>
+      </div>
+    </section>
+
+  </div>
+  <!-- ============ /Tab 4: 配息退休規劃 結束 ============ -->
+
+  </div>
+  <!-- ============ /工具區 結束 ============ -->
+
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="disclaimer">
+      <div class="title-d">— 風險告知與免責聲明 —</div>
+      <p>一、本試算為財務模型,假設配息率固定,但實際配息率會隨市場、發行人財務、基金經理決策調整,不保證持續發放。高配息標的須檢視「配息組成」,非僅看配息率。</p>
+      <p>二、房貸採機動利率時,升息會增加月付金,但配息未必同步調整,可能壓縮淨現金流。外幣計價商品另有匯率風險。</p>
+      <p>三、本試算表僅提供試算,不代表投資建議。</p>
+    </div>
+    <div class="sign">
+      Prepared confidentially <span class="div">◆</span> For private review only
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const fmt = n => Math.round(n).toLocaleString('zh-TW');
+  const fmtSign = n => (n >= 0 ? '+' : '−') + Math.round(Math.abs(n)).toLocaleString('zh-TW');
+  const fmtW = n => (Math.round(n / 1000) / 10).toLocaleString('zh-TW', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+  const fmtWSign = n => (n >= 0 ? '+' : '−') + (Math.round(Math.abs(n) / 1000) / 10).toLocaleString('zh-TW', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + ' 萬';
+
+  let stressOn = false;
+  let selectedRate = 8;
+
+  function pmt(p, r, n) {
+    if (p <= 0 || n <= 0) return 0;
+    if (r === 0) return p / n;
+    return p * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1);
+  }
+  function remBalance(p, r, n, k) {
+    if (p <= 0 || n <= 0 || k >= n) return 0;
+    if (r === 0) return p * (1 - k/n);
+    return p * (Math.pow(1+r, n) - Math.pow(1+r, k)) / (Math.pow(1+r, n) - 1);
+  }
+
+  function calc() {
+    const ol = (+$('ol').value || 0) * 10000;
+    const orRate = (+$('or').value || 0) / 100 / 12;
+    const ot = (+$('ot').value || 0) * 12;
+    const yp = Math.min((+$('yp').value || 0) * 12, ot);
+    const refiTotal = (+$('cash').value || 0) * 10000;
+    let rrRateAnnual = (+$('rr').value || 0);
+    const rt = (+$('rt').value || 0) * 12;
+
+    if (stressOn) rrRateAnnual += 1;
+    const rrRate = rrRateAnnual / 100 / 12;
+
+    const remaining = remBalance(ol, orRate, ot, yp);
+    const cashOut = Math.max(0, refiTotal - remaining);
+    window._cashOutWan = cashOut / 10000;  // 暴露給「一鍵帶入」按鈕使用(萬元為單位)
+    const origPmt = pmt(ol, orRate, ot);
+    const newPmt = pmt(refiTotal, rrRate, rt);
+
+    $('mrem').textContent = fmtW(remaining);
+    $('mout').textContent = fmtW(cashOut);
+    $('mop').textContent = fmt(origPmt);
+    $('mrp').textContent = fmt(newPmt);
+    $('livePmtOrig').textContent = fmt(origPmt);
+    $('livePmtNew').textContent = fmt(newPmt);
+
+    // 互動面板計算
+    const invAmount = (+$('invAmount').value || 0) * 10000;
+    const effectiveRate = stressOn ? selectedRate * 0.7 : selectedRate;
+    const divIncome = invAmount * (effectiveRate / 100) / 12;
+    const netFlow = divIncome - newPmt;
+
+    $('divIncome').textContent = '+ ' + fmt(divIncome);
+    $('payOut').textContent = '− ' + fmt(newPmt);
+    $('netFlow').textContent = (netFlow >= 0 ? '+ ' : '− ') + fmt(Math.abs(netFlow));
+    $('netFlow').className = 'cl-value ' + (netFlow >= 0 ? 'pos' : 'neg');
+    $('hint-cash').textContent = '增貸後產生的現金為 ' + fmtW(cashOut) + ' 萬,可手動調整投入金額';
+
+    // 房貸減壓比較
+    const withRefiBurden = newPmt - divIncome;
+    const reduction = origPmt - withRefiBurden;
+
+    $('cmp-orig').textContent = fmt(origPmt);
+    $('cmp-new').textContent = fmt(newPmt);
+    $('cmp-div').textContent = fmt(divIncome);
+    // 原房貸:固定是支出(deficit 棕紅色)
+    $('cmp-orig-total').textContent = '− ' + fmt(origPmt) + ' 元';
+    $('cmp-orig-total').className = 'cs-summary-num deficit';
+    // 增貸後:依結果顯示「-」(支出/棕紅)或「+」(結餘/綠色)
+    if (withRefiBurden > 0) {
+      $('cmp-new-total').textContent = '− ' + fmt(withRefiBurden) + ' 元';
+      $('cmp-new-total').className = 'cs-summary-num deficit';
+    } else {
+      $('cmp-new-total').textContent = '+ ' + fmt(Math.abs(withRefiBurden)) + ' 元';
+      $('cmp-new-total').className = 'cs-summary-num surplus';
+    }
+    $('cmp-rate-tag').textContent = '· 月配 ' + selectedRate + '%';
+
+    const verdict = $('verdict');
+    if (reduction > 100) {
+      verdict.className = 'verdict success';
+      $('verdict-icon').textContent = '✓';
+      $('verdict-title').textContent = '達成房貸減壓';
+      $('verdict-detail').textContent = '每月可省下 ' + fmt(reduction) + ' 元(配息超過月付差額)';
+    } else if (reduction < -100) {
+      verdict.className = 'verdict fail';
+      $('verdict-icon').textContent = '✗';
+      $('verdict-title').textContent = '未達成房貸減壓';
+      $('verdict-detail').textContent = '每月仍多支出 ' + fmt(Math.abs(reduction)) + ' 元(配息不足以覆蓋月付差額)';
+    } else {
+      verdict.className = 'verdict neutral';
+      $('verdict-icon').textContent = '=';
+      $('verdict-title').textContent = '損益接近平衡';
+      $('verdict-detail').textContent = '配息收入大致覆蓋月付差額,房貸負擔與原本相當';
+    }
+
+    // 差異現金流(每月)+ 房貸繳完總共省繳(嚴謹版:兩情境各自繳到底再相減)
+    const remMonthsOrig = Math.max(0, ot - yp);
+    const totalSaved = origPmt * remMonthsOrig - withRefiBurden * rt;
+
+    $('rs-monthly').textContent = (reduction >= 0 ? '+ ' : '− ') + fmt(Math.abs(reduction)) + ' 元';
+    $('rs-monthly').className = 'rs-value ' + (reduction >= 0 ? 'pos' : 'neg');
+    $('rs-total').textContent = (totalSaved >= 0 ? '+ ' : '− ') + fmt(Math.abs(totalSaved)) + ' 元';
+    $('rs-total').className = 'rs-value ' + (totalSaved >= 0 ? 'pos' : 'neg');
+
+    const remYrsOrig = Math.round(remMonthsOrig / 12 * 10) / 10;
+    const refiYrs = Math.round(rt / 12 * 10) / 10;
+    $('rs-note').textContent = '算法:原月付 × 原貸剩餘 ' + remYrsOrig + ' 年,對比增貸後每月實際支出 × 增貸 ' + refiYrs + ' 年,兩者相減(正值=省繳,負值=多繳)。';
+  }
+
+  document.querySelectorAll('input[type=number]').forEach(el => {
+    el.addEventListener('input', calc);
+    el.addEventListener('change', calc);
+  });
+
+  document.querySelectorAll('.calc-panel .rate-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.calc-panel .rate-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      selectedRate = +this.dataset.rate;
+      calc();
+    });
+  });
+
+  // 一鍵帶入「增貸後產生的現金」到投入金額
+  const quickBtn = $('quickFillCash');
+  if (quickBtn) {
+    quickBtn.addEventListener('click', function() {
+      const cashWan = window._cashOutWan || 0;
+      if (cashWan <= 0) {
+        alert('請先完成上方「原房貸資訊」與「增貸條件設定」,才能帶入金額。');
+        return;
+      }
+      // 進位到整數萬元
+      $('invAmount').value = Math.round(cashWan);
+      // 視覺回饋
+      this.classList.add('flash');
+      setTimeout(() => this.classList.remove('flash'), 600);
+      // 觸發重算
+      calc();
+    });
+  }
+
+  calc();
+})();
+
+
+(function(){
+  const homeView = document.getElementById('home-view');
+  const toolView = document.getElementById('tool-view');
+
+  function showTool(target) {
+    // 切到對應分頁
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    const btn = document.querySelector('.tab-btn[data-tab="' + target + '"]');
+    if (btn) btn.classList.add('active');
+    const pane = document.getElementById('tab-' + target);
+    if (pane) pane.classList.add('active');
+    // 顯示工具區、隱藏首頁
+    homeView.style.display = 'none';
+    toolView.style.display = '';
+    const tb = document.getElementById('topbar');
+    if (tb) tb.style.display = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function showHome() {
+    toolView.style.display = 'none';
+    homeView.style.display = '';
+    const tb = document.getElementById('topbar');
+    if (tb) tb.style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 首頁卡片點擊
+  document.querySelectorAll('.tool-card[data-go]').forEach(card => {
+    card.addEventListener('click', function() {
+      showTool(this.dataset.go);
+    });
+  });
+  // 返回工具箱
+  const backBtn = document.getElementById('backToHome');
+  if (backBtn) backBtn.addEventListener('click', () => {
+    showHome();
+    if (typeof window.refreshAllClients === 'function') window.refreshAllClients();
+  });
+
+  // 暴露給「所有客戶總覽」用
+  window.openToolWithClient = function(tool, id) {
+    showTool(tool);
+    setTimeout(() => {
+      if (window.clientLoaders && typeof window.clientLoaders[tool] === 'function') {
+        window.clientLoaders[tool](id);
+      }
+    }, 50);
+  };
+
+  // 分頁切換(工具區內)
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const target = this.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+    });
+  });
+})();
+
+/* ============================================
+   信用貸款試算
+   ============================================ */
+(function(){
+  const $ = id => document.getElementById(id);
+  const fmt = n => {
+    if (!isFinite(n) || isNaN(n)) return '0';
+    return Math.round(n).toLocaleString('zh-TW');
+  };
+  const parseNum = v => {
+    const n = parseFloat(String(v).replace(/,/g, ''));
+    return isNaN(n) ? 0 : n;
+  };
+  function pmt(principal, annualRate, years) {
+    const r = annualRate / 100 / 12;
+    const n = years * 12;
+    if (n <= 0) return 0;
+    if (r === 0) return principal / n;
+    return principal * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1);
+  }
+
+  let crRate = 8;
+  let crNv = 80;  // 保守淨值假設 % (100/90/80)
+  const SOURCE_TYPES = ['自備款', '信貸', '基金平台貸', '房貸', '其他'];
+  const PAY_TYPES = ['本金+利息', '只還息', '無'];
+
+  // 資金來源列(預設一列空白,可新增/刪除)
+  function blankRow() { return { src: '自備款', amount: '', oldBal: '', rate: '', pay: '無', years: '' }; }
+  let rows = [ blankRow() ];
+
+  function buildRows() {
+    const container = $('creditRows');
+    container.innerHTML = '';
+    rows.forEach((row, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'ct-row-wrap';
+      const div = document.createElement('div');
+      div.className = 'ct-row';
+      div.innerHTML = `
+        <select data-i="${i}" data-k="src">${SOURCE_TYPES.map(t => `<option ${t===row.src?'selected':''}>${t}</option>`).join('')}</select>
+        <input type="text" inputmode="numeric" data-i="${i}" data-k="amount" value="${row.amount}">
+        <input type="number" step="0.01" data-i="${i}" data-k="rate" value="${row.rate}">
+        <select data-i="${i}" data-k="pay">${PAY_TYPES.map(t => `<option ${t===row.pay?'selected':''}>${t}</option>`).join('')}</select>
+        <input type="number" step="1" data-i="${i}" data-k="years" value="${row.years}" placeholder="年">
+        <span class="ct-pay-wrap"><span class="ct-pay" id="ctPay${i}">—</span><button type="button" class="ct-del" data-del="${i}" title="刪除此列">×</button></span>
+      `;
+      wrap.appendChild(div);
+
+      // 只有「房貸」才出現的附加格
+      if (row.src === '房貸') {
+        const extra = document.createElement('div');
+        extra.className = 'ct-mortgage-extra';
+        extra.innerHTML = `
+          <div class="ct-mx-field">
+            <span class="ct-mx-label">原貸餘額(原本要還銀行,不計入投入)</span>
+            <input type="text" inputmode="numeric" data-i="${i}" data-k="oldBal" value="${row.oldBal || ''}" placeholder="">
+          </div>
+          <div class="ct-mx-field">
+            <span class="ct-mx-label">增貸後現金流(實際拿去投資)</span>
+            <div class="ct-mx-readonly" id="ctNewCash${i}">—</div>
+          </div>
+        `;
+        wrap.appendChild(extra);
+      }
+
+      container.appendChild(wrap);
+    });
+    container.querySelectorAll('select, input').forEach(el => {
+      el.addEventListener('input', onRowChange);
+      el.addEventListener('change', onRowChange);
+    });
+    container.querySelectorAll('.ct-del').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const idx = +this.dataset.del;
+        if (rows.length <= 1) { alert('至少需保留一列。'); return; }
+        rows.splice(idx, 1);
+        buildRows();
+        calcCredit();
+      });
+    });
+  }
+
+  function addRow() {
+    rows.push({ src: '信貸', amount: '', oldBal: '', rate: '', pay: '本金+利息', years: '7' });
+    buildRows();
+    calcCredit();
+  }
+
+  function onRowChange(e) {
+    const i = +e.target.dataset.i;
+    const k = e.target.dataset.k;
+    rows[i][k] = e.target.value;
+    // 若切換成/離開「房貸」需重建該列以顯示/隱藏附加格
+    if (k === 'src') { buildRows(); }
+    calcCredit();
+  }
+
+  // 計算單列月償還(回傳正值,代表每月要付出的金額)
+  function rowMonthlyPay(row) {
+    const amount = parseNum(row.amount);
+    const rate = parseNum(row.rate);
+    const years = parseNum(row.years);
+    if (row.pay === '本金+利息') {
+      return pmt(amount, rate, years);
+    } else if (row.pay === '只還息') {
+      return amount * (rate / 100) / 12;
+    }
+    return 0;  // 無
+  }
+
+  function calcCredit() {
+    let totalInvest = 0;
+    let totalPay = 0;
+    let interestOnlyDebt = 0;   // 只還息的本金(良性負債)
+    let interestOnlyPay = 0;    // 只還息的月付(永久要還息)
+    let creditPay = 0;          // 信貸的月還款(7 年攤還,7 年後消失)
+    let mortgagePay = 0;        // 房貸的月還款(房貸期間都在,房貸還完才消失)
+    let hasCredit = false;
+    let hasMortgage = false;
+    let mortgageYears = 0;       // 取所有房貸最長的年限
+
+    rows.forEach((row, i) => {
+      const amount = parseNum(row.amount);
+      const oldBal = parseNum(row.oldBal);
+      const invested = Math.max(0, amount - oldBal);
+      totalInvest += invested;
+      const mp = rowMonthlyPay(row);
+      totalPay += mp;
+      const payEl = $('ctPay' + i);
+      if (payEl) payEl.textContent = mp > 0 ? '－' + fmt(mp) : '0';
+      // 房貸附加格:顯示增貸後現金流
+      const newCashEl = $('ctNewCash' + i);
+      if (newCashEl) newCashEl.textContent = fmt(invested) + ' 元';
+
+      // 分類:信貸 / 房貸 / 只還息
+      if (row.src === '信貸') {
+        hasCredit = true;
+        creditPay += mp;
+      } else if (row.src === '房貸') {
+        hasMortgage = true;
+        mortgagePay += mp;
+        const yrs = parseNum(row.years);
+        if (yrs > mortgageYears) mortgageYears = yrs;
+      }
+      if (row.pay === '只還息') {
+        interestOnlyDebt += amount;
+        interestOnlyPay += mp;
+      }
+    });
+
+    $('cr_totalInvest').textContent = fmt(totalInvest);
+    $('cr_totalPay').textContent = '－' + fmt(totalPay);
+
+    // ===== 投資配息分析 =====
+    const divIncome = totalInvest * (crRate / 100) / 12;
+    const netFlow = divIncome - totalPay;
+
+    // ===== 情境判斷 =====
+    // 第一階段年數 + 標題
+    let stage1Years, stage1Title, stage1Intro, stage1PayLabel;
+    let stage2Visible, stage2Title, stage2Intro, stage2PayLabel, stage2Pay;
+    let stage3Visible = false, stage3Title = '', stage3Intro = '', stage3Pay = 0;
+    let showDualAsset = false;
+
+    if (hasCredit) {
+      // 有信貸 → 7 年制
+      stage1Years = 7;
+      stage1Title = '七年內財富走向';
+      stage1Intro = hasMortgage
+        ? '信貸攤還期間,每月配息扣除信貸 + 房貸 + 其他還款後的淨現金流。'
+        : '信貸攤還期間,每月配息扣除償還後的淨現金流。';
+      stage1PayLabel = '每月償還';
+      stage2Visible = true;
+      stage2Title = '滿七年後財富走向';
+      if (hasMortgage) {
+        stage2Intro = `信貸 7 年攤還完畢後,房貸仍持續償還(房貸年限 ${mortgageYears || '?'} 年),每月可領的現金流提升。`;
+        stage2PayLabel = '每月房貸+只還息';
+        stage2Pay = mortgagePay + interestOnlyPay;
+        // 第三階段:房貸還完後
+        stage3Visible = true;
+        stage3Title = `房貸還完後(滿 ${mortgageYears || 30} 年)`;
+        stage3Intro = `房貸 ${mortgageYears || 30} 年攤還完畢後,房子完整為您所有,僅剩只還息的負債,每月可領大幅提升。`;
+        stage3Pay = interestOnlyPay;
+        showDualAsset = true;
+      } else {
+        stage2Intro = '信貸 7 年攤還完畢後,僅剩只還息的負債,每月可領的現金流提升。';
+        stage2PayLabel = '每月只還息';
+        stage2Pay = interestOnlyPay;
+      }
+    } else if (hasMortgage) {
+      // 只有房貸,沒信貸 → 用房貸年限
+      stage1Years = mortgageYears || 30;
+      stage1Title = `房貸期間財富走向(${stage1Years} 年)`;
+      stage1Intro = `房貸攤還期間,每月配息扣除償還後的淨現金流。`;
+      stage1PayLabel = '每月償還';
+      stage2Visible = true;
+      stage2Title = '房貸還完後財富走向';
+      stage2Intro = `房貸 ${stage1Years} 年攤還完畢後,房子完整為您所有,僅剩只還息的負債,每月可領的現金流提升。`;
+      stage2PayLabel = '每月只還息';
+      stage2Pay = interestOnlyPay;
+      showDualAsset = true;
+    } else {
+      // 都沒有(只有自備款 / 基金平台貸 / 其他)
+      stage1Years = 7;
+      stage1Title = '財富走向(七年累積)';
+      stage1Intro = '每月配息扣除償還後的淨現金流。';
+      stage1PayLabel = '每月償還';
+      stage2Visible = (interestOnlyPay > 0);
+      stage2Title = '純配息走向';
+      stage2Intro = '無信貸與房貸,僅剩只還息的負債,每月可領現金流。';
+      stage2PayLabel = '每月只還息';
+      stage2Pay = interestOnlyPay;
+    }
+
+    // 套用標題與說明
+    $('cr_stage1_title').textContent = stage1Title;
+    $('cr_stage1_intro').textContent = stage1Intro;
+    $('cr_a_pay_label').textContent = stage1PayLabel;
+    // 第一階段累積結餘標籤
+    const total7Label = $('cr_a_total7_label');
+    // ===== 第一階段走向 =====
+    const stage1Months = stage1Years * 12;
+    const stage1Total = netFlow * stage1Months;
+    $('cr_a_div').textContent = fmt(divIncome);
+    $('cr_a_pay').textContent = '－' + fmt(totalPay);
+    $('cr_a_net').textContent = fmt(netFlow);
+    const total7El = $('cr_a_total7');
+    if (netFlow >= 0) {
+      total7El.textContent = '＋' + fmt(stage1Total);
+      total7El.className = 'cr-accent-num';
+      if (total7Label) total7Label.textContent = `${stage1Years}年累積結餘`;
+    } else {
+      total7El.textContent = '－' + fmt(Math.abs(stage1Total));
+      total7El.className = 'cr-warn-num';
+      if (total7Label) total7Label.textContent = `${stage1Years}年累積自繳`;
+    }
+
+    // ===== 第二階段走向 =====
+    const stage2Sec = $('cr_stage2_section');
+    if (stage2Visible) {
+      stage2Sec.style.display = '';
+      $('cr_stage2_title').textContent = stage2Title;
+      $('cr_stage2_intro').textContent = stage2Intro;
+      $('cr_f_pay_label').textContent = stage2PayLabel;
+      const fNet = divIncome - stage2Pay;
+      $('cr_f_div').textContent = fmt(divIncome);
+      $('cr_f_pay').textContent = '－' + fmt(stage2Pay);
+      $('cr_f_net').textContent = fmt(fNet);
+
+      // ===== 第三階段(房貸還完後)=====
+      const stage3Wrap = $('cr_stage3_wrap');
+      if (stage3Wrap) {
+        if (stage3Visible) {
+          stage3Wrap.style.display = '';
+          $('cr_stage3_title').textContent = stage3Title;
+          $('cr_stage3_intro').textContent = stage3Intro;
+          const gNet = divIncome - stage3Pay;
+          $('cr_g_div').textContent = fmt(divIncome);
+          $('cr_g_pay').textContent = '－' + fmt(stage3Pay);
+          $('cr_g_net').textContent = fmt(gNet);
+        } else {
+          stage3Wrap.style.display = 'none';
+        }
+      }
+
+      // 房子+保單雙資產提示
+      const dualHint = $('cr_dual_asset_hint');
+      if (dualHint) dualHint.style.display = showDualAsset ? '' : 'none';
+    } else {
+      stage2Sec.style.display = 'none';
+    }
+
+    // 保留變數給後面 V 段用
+    const sevenYr = netFlow * 84;  // V 段仍用 7 年計算(保守試算)
+
+    // ===== 保守淨值與損益 =====
+    const nvPct = crNv;
+    const netValue = totalInvest * (nvPct / 100);
+    const profit = netValue - interestOnlyDebt + sevenYr;
+    $('cr_nvPct').textContent = nvPct;
+    $('cr_netValue').textContent = fmt(netValue);
+    $('cr_goodDebt').textContent = '－' + fmt(interestOnlyDebt);
+    $('cr_profit').textContent = fmt(profit);
+
+    // 結論
+    const vEl = $('cr_verdictText');
+    const stage1Yrs = stage1Years;
+    if (totalInvest <= 0) {
+      vEl.innerHTML = '請於上方輸入資金來源金額,即可看見配息現金流與走向試算。';
+    } else if (netFlow >= 0) {
+      vEl.innerHTML = `以 ${crRate}% 年配息計算,投入 <strong>NT$ ${fmt(totalInvest)}</strong> 元,每月配息 NT$ ${fmt(divIncome)} 元,扣除月償還後每月淨現金流 <strong>NT$ ${fmt(netFlow)}</strong> 元;${stage1Yrs} 年累積約 <strong>NT$ ${fmt(netFlow * stage1Months)}</strong> 元。`;
+    } else {
+      const phase2Msg = stage2Visible
+        ? `;${hasCredit ? '信貸還清後' : '房貸還完後'}每月可領 <strong>NT$ ${fmt(divIncome - stage2Pay)}</strong> 元`
+        : '';
+      vEl.innerHTML = `以 ${crRate}% 年配息計算,${hasCredit ? '前七年' : (hasMortgage ? '房貸期間' : '此期間')}每月需補貼 <strong>NT$ ${fmt(Math.abs(netFlow))}</strong> 元${phase2Msg}。`;
+    }
+  }
+
+  // 配息率切換
+  document.querySelectorAll('#cr_rateGroup .rate-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#cr_rateGroup .rate-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      crRate = +this.dataset.rate;
+      calcCredit();
+    });
+  });
+
+  // 保守淨值切換(100/90/80)
+  document.querySelectorAll('#cr_nv_group .rate-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#cr_nv_group .rate-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      crNv = +this.dataset.nv;
+      calcCredit();
+    });
+  });
+
+  buildRows();
+  calcCredit();
+
+  // 新增資金來源列
+  const addBtn = $('cr_addRow');
+  if (addBtn) addBtn.addEventListener('click', addRow);
+
+  // 客戶儲存
+  window.creditGetData = function() {
+    return { rows: JSON.parse(JSON.stringify(rows)), crRate: crRate, crNv: crNv };
+  };
+  window.creditClear = function() {
+    rows = [ blankRow() ];
+    crRate = 8;
+    crNv = 80;
+    document.querySelectorAll('#cr_rateGroup .rate-btn').forEach(b => {
+      b.classList.toggle('active', +b.dataset.rate === 8);
+    });
+    document.querySelectorAll('#cr_nv_group .rate-btn').forEach(b => {
+      b.classList.toggle('active', +b.dataset.nv === 80);
+    });
+    buildRows();
+    calcCredit();
+  };
+  window.creditSetData = function(data) {
+    if (!data) return;
+    if (Array.isArray(data.rows) && data.rows.length) {
+      rows = data.rows.map(r => ({ src:'信貸', amount:'', oldBal:'', rate:'', pay:'本金+利息', years:'', ...r }));
+    }
+    if (data.crRate) {
+      crRate = data.crRate;
+      document.querySelectorAll('#cr_rateGroup .rate-btn').forEach(b => {
+        b.classList.toggle('active', +b.dataset.rate === crRate);
+      });
+    }
+    if (data.crNv && [100, 90, 80].includes(data.crNv)) {
+      crNv = data.crNv;
+      document.querySelectorAll('#cr_nv_group .rate-btn').forEach(b => {
+        b.classList.toggle('active', +b.dataset.nv === crNv);
+      });
+    }
+    buildRows();
+    calcCredit();
+  };
+})();
+
+/* ============================================
+   配息退休規劃
+   ============================================ */
+(function(){
+  const $ = id => document.getElementById(id);
+  const fmt = n => {
+    if (!isFinite(n) || isNaN(n)) return '0';
+    return Math.round(n).toLocaleString('zh-TW');
+  };
+  const parseNum = v => {
+    const n = parseFloat(String(v).replace(/,/g, ''));
+    return isNaN(n) ? 0 : n;
+  };
+
+  let dvRate = 8;
+  let dvARate = 6;       // 定期定額假設報酬率(10 年一輪用)
+  let dvCycle = 6;       // 循環年數(6 = 美金保單,10 = 定期定額)
+  let perCycleContrib = {};  // 逐輪自訂提撥金額(key = 輪數, value = 該輪每月提撥)
+  let perCycleExtra = {};    // 逐輪自訂「每月額外定期定額」(從口袋,非配息來源)
+  let dvRows = [ { amount: '', note: '' } ];
+  const FIELDS = ['dv_age','dv_retire','dv_cash','dv_saving','dv_house','dv_stock','dv_other'];
+
+  // 定期定額基金表(月繳 10,000 元,假設報酬率 6%)
+  const FUND_TABLE = {
+    1: 41946, 2: 124114, 3: 223498, 4: 328420, 5: 439216,
+    6: 607264, 7: 785155, 8: 973527, 9: 1185829, 10: 1449178,
+    11: 1651999, 12: 1867107, 13: 2095395, 14: 2337841, 15: 2595519,
+    16: 2869615, 17: 3161436, 18: 3472440, 19: 3801774, 20: 4149934
+  };
+  function getFundValue(years, monthly, rate) {
+    const y = Math.max(1, Math.min(20, Math.round(years)));
+    const baseTable = FUND_TABLE[y] * (monthly / 10000);
+    if (rate === 6 || !rate) return baseTable;
+    const months = y * 12;
+    const r6 = 0.06 / 12;
+    const pureSix = monthly * (Math.pow(1 + r6, months) - 1) / r6;
+    const factor = baseTable / pureSix;
+    const rNew = rate / 100 / 12;
+    const pureNew = monthly * (Math.pow(1 + rNew, months) - 1) / rNew;
+    return pureNew * factor;
+  }
+
+  // 壽險保障倍率(依年齡)
+  function getLifeRatio(age) {
+    if (!age || age <= 0) return 0;
+    if (age <= 30) return 190;
+    if (age <= 40) return 160;
+    if (age <= 50) return 140;
+    if (age <= 60) return 120;
+    if (age <= 70) return 110;
+    if (age <= 90) return 102;
+    return 100;
+  }
+
+  // 美金分紅保單表(年繳 2,000 USD × 6 年繳費期,28 歲投保版)
+  // 解約金 USD(用於小水庫累積)
+  const POLICY_USD = {
+    1: 601, 2: 1583, 3: 2621, 4: 5068, 5: 8109, 6: 12329,
+    7: 12525, 8: 12720, 9: 12916, 10: 13155, 11: 13375, 12: 13600,
+    13: 13825, 14: 14049, 15: 14304, 16: 14551, 17: 14777, 18: 15030,
+    19: 15284, 20: 15565, 21: 15829, 22: 16110, 23: 16378, 24: 16674,
+    25: 16977, 26: 17269, 27: 17579, 28: 17882, 29: 18192, 30: 18510,
+    31: 18834, 32: 19184, 33: 19509, 34: 19850, 35: 20179, 36: 20525,
+    37: 20866, 38: 21210, 39: 21553, 40: 21894, 41: 22253, 42: 22613,
+    43: 22986, 44: 23353, 45: 23736, 46: 24126, 47: 24518, 48: 24922
+  };
+  // 身故保險金 USD(用於美金分紅保單壽險保障)
+  const POLICY_DEATH_USD = {
+    1: 27300, 2: 27300, 3: 27300, 4: 56846, 5: 85641, 6: 120653,
+    7: 121739, 8: 122842, 9: 123958, 10: 125097, 11: 126250, 12: 127468,
+    13: 128736, 14: 130064, 15: 131435, 16: 132851, 17: 134328, 18: 135896,
+    19: 137505, 20: 139146, 21: 140869, 22: 142645, 23: 144514, 24: 146426,
+    25: 148426, 26: 150475, 27: 152614, 28: 154772, 29: 157023, 30: 159365,
+    31: 168864, 32: 170386, 33: 171980, 34: 173647, 35: 175390, 36: 177210,
+    37: 179112, 38: 181104, 39: 183113, 40: 185310, 41: 187576, 42: 189932,
+    43: 192425, 44: 194984, 45: 197691, 46: 200515, 47: 203448, 48: 206504
+  };
+  function getPolicyUSD(years) {
+    const y = Math.max(1, Math.min(48, Math.round(years)));
+    return POLICY_USD[y] || 0;
+  }
+  function getPolicyDeathUSD(years) {
+    const y = Math.max(1, Math.min(48, Math.round(years)));
+    return POLICY_DEATH_USD[y] || 0;
+  }
+
+  // 單輪小水庫累積:給定每月配息與循環年數,回傳期末小水庫
+  function smallReservoir(monthlyDiv, cycleYears) {
+    if (cycleYears === 6) {
+      // 美金保單:解約金 = 12,137 USD × 月提撥 × 0.006 (匯率與比例已合併)
+      return getPolicyUSD(6) * monthlyDiv * 0.006;
+    } else {
+      // 定期定額 10 年
+      return getFundValue(10, monthlyDiv, dvARate);
+    }
+  }
+
+  function blankInvest() { return { amount: '', note: '' }; }
+
+  function buildInvestRows() {
+    const container = $('dv_investRows');
+    if (!container) return;
+    container.innerHTML = '';
+    dvRows.forEach((row, i) => {
+      const div = document.createElement('div');
+      div.className = 'ct-row dv-row';
+      div.innerHTML = `
+        <span class="dv-idx">第 ${i+1} 筆</span>
+        <input type="text" inputmode="numeric" data-i="${i}" data-k="amount" value="${row.amount}" placeholder="">
+        <span class="ct-pay-wrap"><span class="ct-pay" id="dvRowMonthly${i}">—</span><button type="button" class="ct-del" data-del="${i}" title="刪除此筆">×</button></span>
+      `;
+      container.appendChild(div);
+    });
+    container.querySelectorAll('input').forEach(el => {
+      el.addEventListener('input', onInvestRowChange);
+      el.addEventListener('change', onInvestRowChange);
+    });
+    container.querySelectorAll('input[data-k="amount"]').forEach(el => attachThousands(el));
+    container.querySelectorAll('.ct-del').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const idx = +this.dataset.del;
+        if (dvRows.length <= 1) { alert('至少需保留一筆。'); return; }
+        dvRows.splice(idx, 1);
+        buildInvestRows();
+        calcDividend();
+      });
+    });
+  }
+
+  function onInvestRowChange(e) {
+    const i = +e.target.dataset.i;
+    const k = e.target.dataset.k;
+    dvRows[i][k] = e.target.value;
+    calcDividend();
+  }
+
+  function calcDividend() {
+    const age = parseNum($('dv_age').value);
+    const retire = parseNum($('dv_retire').value);
+    const totalYears = Math.max(0, retire - age);
+    const cash = parseNum($('dv_cash').value);
+    const saving = parseNum($('dv_saving').value);
+    const house = parseNum($('dv_house').value);
+    const stock = parseNum($('dv_stock').value);
+    const other = parseNum($('dv_other').value);
+
+    // I. 可動用資產合計
+    const assets = cash + saving + house + stock + other;
+    $('dv_assets').textContent = fmt(assets);
+
+    // II. 多筆投入加總
+    let principal = 0;
+    dvRows.forEach((row, i) => {
+      const amt = parseNum(row.amount);
+      principal += amt;
+      const rowMonthly = amt * (dvRate / 100) / 12;
+      const el = $('dvRowMonthly' + i);
+      if (el) el.textContent = amt > 0 ? fmt(rowMonthly) + ' 元' : '0';
+    });
+    const monthlyDiv = principal * (dvRate / 100) / 12;
+    const yearlyDiv = principal * (dvRate / 100);
+    $('dv_totalInvest').textContent = fmt(principal);
+    $('dv_totalMonthly').textContent = fmt(monthlyDiv) + ' 元';
+    $('dv_s_principal').textContent = fmt(principal);
+    $('dv_s_monthly2').textContent = fmt(monthlyDiv);
+    $('dv_s_yearly').textContent = fmt(yearlyDiv);
+
+    // III. 循環滾動
+    const cycleYears = dvCycle;  // 6 / 10 / 0(0 = 純月配息不循環)
+    const isPure = (cycleYears === 0);
+    const cycleCount = isPure ? 0 : Math.floor(totalYears / cycleYears);
+    const listEl = $('dv_cycles_list');
+
+    if (principal <= 0) {
+      listEl.innerHTML = '<div class="cycle-intro" style="text-align:center;padding:20px;">請於 II. 新增至少一筆投入金額,即可產生循環試算</div>';
+      $('dv_cycles_count').textContent = '—';
+      $('dv_total').textContent = '—';
+      $('dv_retire_monthly').textContent = '—';
+      $('dv_life').textContent = '—';
+      $('dv_lifeAge').textContent = '—';
+      $('dv_verdictText').innerHTML = '請於「投入月配息商品」表格新增至少一筆投入金額,即可看見循環試算。';
+      return;
+    }
+
+    // 純月配息模式:不跑循環,只顯示資訊卡
+    if (isPure) {
+      const totalMonths = totalYears * 12;
+      const periodTotalDiv = monthlyDiv * totalMonths;
+      listEl.innerHTML = `
+        <div class="cycle-item">
+          <div class="cycle-num">·</div>
+          <div class="cycle-card">
+            <div class="cycle-card-head">純月配息模式</div>
+            <div class="cycle-card-period">${age || '?'} 歲 ~ ${retire || '?'} 歲 · 不滾存,單純領月配息</div>
+            <div class="cycle-card-detail">
+              <div class="cd-row">
+                <div class="cd-label">大水庫本金</div>
+                <div class="cd-value">${fmt(principal)}</div>
+              </div>
+              <div class="cd-row">
+                <div class="cd-label">每月配息</div>
+                <div class="cd-value gold">${fmt(monthlyDiv)} / 月</div>
+              </div>
+              <div class="cd-row">
+                <div class="cd-label">距退休年數</div>
+                <div class="cd-value">${totalYears} 年</div>
+              </div>
+              <div class="cd-row">
+                <div class="cd-label">期間總配息收入</div>
+                <div class="cd-value gold">${fmt(periodTotalDiv)}</div>
+              </div>
+            </div>
+            <div class="cycle-card-footer">
+              <div class="cf-formula">大水庫本金 <b>${fmt(principal)}</b> 維持不變,每月配息 <b>${fmt(monthlyDiv)}</b> 元由客戶自由運用。</div>
+            </div>
+          </div>
+        </div>
+      `;
+      $('dv_cycles_count').textContent = '0';
+      $('dv_total').textContent = fmt(principal);
+      $('dv_retire_monthly').textContent = fmt(monthlyDiv);
+      $('dv_lifeAge').textContent = retire || '—';
+      $('dv_life').textContent = '依商品條款';
+      $('dv_verdictText').innerHTML = `客戶以 <strong>NT$ ${fmt(principal)}</strong> 元投入月配息商品,${retire || '退休'} 歲前每月配息 <strong>NT$ ${fmt(monthlyDiv)}</strong> 元由客戶自由運用,大水庫本金維持不變。期間累積配息收入約 <strong>NT$ ${fmt(periodTotalDiv)}</strong> 元。`;
+      return;
+    }
+
+    if (totalYears <= 0 || cycleCount <= 0) {
+      listEl.innerHTML = `<div class="cycle-intro" style="text-align:center;padding:20px;">請設定目前年齡與目標退休年齡,且區間需至少 ${cycleYears} 年(一輪)</div>`;
+      $('dv_cycles_count').textContent = '0';
+      $('dv_total').textContent = fmt(principal);
+      $('dv_retire_monthly').textContent = fmt(monthlyDiv);
+      $('dv_verdictText').innerHTML = `請設定目前年齡與目標退休年齡,區間需至少 ${cycleYears} 年才能完成一輪循環。`;
+      return;
+    }
+
+    // 跑循環:每輪可自訂提撥金額(perCycleContrib),沒有自訂時 = 當輪配息全投入
+    //      + 每輪可自訂「每月額外定期定額」(perCycleExtra,從口袋)
+    let current = principal;
+    let html = '';
+    const cycles = [];
+    for (let i = 0; i < cycleCount; i++) {
+      const idx = i + 1;
+      const startAge = age + i * cycleYears;
+      const endAge = age + (i + 1) * cycleYears;
+      const cyMonthlyDiv = current * (dvRate / 100) / 12;
+      // 提撥(來自配息)
+      let cyContrib;
+      if (perCycleContrib[idx] !== undefined) {
+        cyContrib = Math.min(perCycleContrib[idx], cyMonthlyDiv);
+      } else {
+        cyContrib = cyMonthlyDiv;
+      }
+      const cyKeep = cyMonthlyDiv - cyContrib;
+      // 額外定期定額(從口袋)
+      const cyExtra = (perCycleExtra[idx] !== undefined) ? Math.max(0, perCycleExtra[idx]) : 0;
+      // 進入小水庫的總金額 = 配息提撥 + 額外定期定額
+      const totalIn = cyContrib + cyExtra;
+      const small = smallReservoir(totalIn, cycleYears);
+      const end = current + small;
+      const endMonthly = end * (dvRate / 100) / 12;
+      cycles.push({ idx, startAge, endAge, start: current, monthly: cyMonthlyDiv, contrib: cyContrib, keep: cyKeep, extra: cyExtra, totalIn, small, end, endMonthly });
+      current = end;
+    }
+
+    // 渲染卡片
+    const productName = cycleYears === 6 ? '美金分紅保單' : `定期定額基金(${dvARate}%)`;
+    cycles.forEach(c => {
+      const keepLine = c.keep > 0
+        ? `<div class="cd-row"><div class="cd-label">客戶留下使用</div><div class="cd-value">${fmt(c.keep)} / 月</div></div>`
+        : '';
+      html += `
+        <div class="cycle-item">
+          <div class="cycle-num">${c.idx}</div>
+          <div class="cycle-card">
+            <div class="cycle-card-head">CYCLE ${c.idx}</div>
+            <div class="cycle-card-period">第 ${c.idx} 循環 · ${c.startAge}~${c.endAge} 歲 · ${productName}</div>
+            <div class="cycle-card-detail">
+              <div class="cd-row">
+                <div class="cd-label">期初大水庫本金</div>
+                <div class="cd-value">${fmt(c.start)}</div>
+              </div>
+              <div class="cd-row">
+                <div class="cd-label">每月配息產生</div>
+                <div class="cd-value gold">${fmt(c.monthly)} / 月</div>
+              </div>
+              <div class="cd-row">
+                <div class="cd-label">提撥到小水庫(來自配息) <span class="cd-edit-hint">可改</span></div>
+                <div class="cd-value gold">
+                  <input type="text" inputmode="numeric" class="dv-contrib-edit" data-idx="${c.idx}" value="${Math.round(c.contrib).toLocaleString('zh-TW')}" /> / 月
+                </div>
+              </div>
+              <div class="cd-row">
+                <div class="cd-label">每月額外定期定額(從口袋) <span class="cd-edit-hint">可改</span></div>
+                <div class="cd-value gold">
+                  <input type="text" inputmode="numeric" class="dv-extra-edit" data-idx="${c.idx}" value="${c.extra > 0 ? Math.round(c.extra).toLocaleString('zh-TW') : ''}" placeholder="0" /> / 月
+                </div>
+              </div>
+              ${keepLine}
+              <div class="cd-row">
+                <div class="cd-label">${cycleYears} 年小水庫累積</div>
+                <div class="cd-value gold">${fmt(c.small)}</div>
+              </div>
+              <div class="cd-row"><div class="cd-label">壽險保障</div><div class="cd-value" style="color:var(--warn);">有壽險保障</div></div>
+            </div>
+            <div class="cycle-card-footer">
+              <div class="cf-formula">
+                期初本金 <b>${fmt(c.start)}</b>
+                <span class="cf-op">＋</span> 小水庫倒回 <b>${fmt(c.small)}</b>
+                <span class="cf-op">＝</span> <span class="cf-result">期末本金 ${fmt(c.end)}</span>
+              </div>
+              <div class="cf-monthly">→ 屆時月現金流可達 NT$ <b>${fmt(c.endMonthly)}</b> / 月</div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    listEl.innerHTML = html;
+
+    // 綁定每輪可編輯欄位(提撥)
+    listEl.querySelectorAll('.dv-contrib-edit').forEach(input => {
+      input.addEventListener('focus', function() { this.value = String(this.value).replace(/,/g, ''); });
+      input.addEventListener('blur', function() {
+        const idx = +this.dataset.idx;
+        const v = parseNum(this.value);
+        if (v > 0) {
+          perCycleContrib[idx] = v;
+        } else {
+          delete perCycleContrib[idx];
+        }
+        calcDividend();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { this.blur(); }
+      });
+    });
+    // 綁定每輪可編輯欄位(額外定期定額)
+    listEl.querySelectorAll('.dv-extra-edit').forEach(input => {
+      input.addEventListener('focus', function() { this.value = String(this.value).replace(/,/g, ''); });
+      input.addEventListener('blur', function() {
+        const idx = +this.dataset.idx;
+        const v = parseNum(this.value);
+        if (v > 0) {
+          perCycleExtra[idx] = v;
+        } else {
+          delete perCycleExtra[idx];
+        }
+        calcDividend();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { this.blur(); }
+      });
+    });
+
+    // IV. 退休摘要
+    const finalAmount = current;
+    const finalMonthly = finalAmount * (dvRate / 100) / 12;
+    const retireAge = age + cycleCount * cycleYears;
+    $('dv_cycles_count').textContent = cycleCount;
+    $('dv_total').textContent = fmt(finalAmount);
+    $('dv_retire_monthly').textContent = fmt(finalMonthly);
+    $('dv_lifeAge').textContent = retireAge;
+    $('dv_life').textContent = '有壽險保障';
+
+    // 結論
+    const remain = totalYears - cycleCount * cycleYears;
+    const remainNote = remain > 0 ? `(剩餘 ${remain} 年未跑完一輪,以 ${cycleCount * cycleYears} 年計算)` : '';
+    $('dv_verdictText').innerHTML = `客戶從 ${age} 歲開始,以 ${productName} 跑 <strong>${cycleCount} 輪 × ${cycleYears} 年</strong> ${remainNote},大水庫從 NT$ ${fmt(principal)} 元成長至 <strong>NT$ ${fmt(finalAmount)}</strong> 元,${retireAge} 歲時每月可領 <strong>NT$ ${fmt(finalMonthly)}</strong> 元,並有壽險保障。`;
+  }
+
+  // 千分位
+  function attachThousands(el) {
+    el.addEventListener('focus', function() { this.value = String(this.value).replace(/,/g, ''); });
+    el.addEventListener('blur', function() {
+      const n = parseNum(this.value);
+      if (n > 0) this.value = n.toLocaleString('zh-TW');
+    });
+  }
+  ['dv_cash','dv_saving','dv_house','dv_stock','dv_other'].forEach(id => {
+    const el = $(id);
+    if (el) attachThousands(el);
+  });
+
+  // 月配息率切換
+  document.querySelectorAll('#dv_rate_group .rate-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#dv_rate_group .rate-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      dvRate = +this.dataset.rate;
+      calcDividend();
+    });
+  });
+
+  // 循環年數切換(6 = 美金保單, 10 = 定期定額)
+  function refreshCycleUI() {
+    const wrap = $('dv_a_rate_wrap');
+    if (wrap) wrap.style.display = (dvCycle === 10) ? '' : 'none';
+  }
+  document.querySelectorAll('#dv_cycle_group .rate-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#dv_cycle_group .rate-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      dvCycle = +this.dataset.cy;
+      // 注意:這裡不清空 perCycleContrib,讓客戶切換對比時保留提撥金額
+      refreshCycleUI();
+      calcDividend();
+    });
+  });
+
+  // 定期定額假設報酬率切換(僅 10 年用)
+  document.querySelectorAll('#dv_a_rate_group .rate-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#dv_a_rate_group .rate-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      dvARate = +this.dataset.rate;
+      calcDividend();
+    });
+  });
+
+  // 輸入事件
+  FIELDS.forEach(id => {
+    const el = $(id);
+    if (el) {
+      el.addEventListener('input', calcDividend);
+      el.addEventListener('change', calcDividend);
+    }
+  });
+
+  // 新增投入筆數
+  const addBtn = $('dv_addRow');
+  if (addBtn) addBtn.addEventListener('click', function() {
+    dvRows.push(blankInvest());
+    buildInvestRows();
+    calcDividend();
+  });
+
+  // 初始化
+  refreshCycleUI();
+  buildInvestRows();
+  calcDividend();
+
+  // 客戶儲存
+  window.dividendGetData = function() {
+    const d = { dvRate, dvARate, dvCycle, dvRows: JSON.parse(JSON.stringify(dvRows)), perCycleContrib: { ...perCycleContrib }, perCycleExtra: { ...perCycleExtra } };
+    FIELDS.forEach(id => {
+      const el = $(id);
+      if (el) d[id] = el.value;
+    });
+    return d;
+  };
+  window.dividendClear = function() {
+    dvRate = 8;
+    dvARate = 6;
+    dvCycle = 6;
+    perCycleContrib = {};
+    perCycleExtra = {};
+    dvRows = [ blankInvest() ];
+    document.querySelectorAll('#dv_rate_group .rate-btn').forEach(b => {
+      b.classList.toggle('active', +b.dataset.rate === 8);
+    });
+    document.querySelectorAll('#dv_a_rate_group .rate-btn').forEach(b => {
+      b.classList.toggle('active', +b.dataset.rate === 6);
+    });
+    document.querySelectorAll('#dv_cycle_group .rate-btn').forEach(b => {
+      b.classList.toggle('active', +b.dataset.cy === 6);
+    });
+    refreshCycleUI();
+    FIELDS.forEach(id => {
+      const el = $(id);
+      if (el) el.value = '';
+    });
+    buildInvestRows();
+    calcDividend();
+  };
+  window.dividendSetData = function(data) {
+    if (!data) return;
+    if (Array.isArray(data.dvRows) && data.dvRows.length) {
+      dvRows = data.dvRows.map(r => ({ amount: '', note: '', ...r }));
+    } else {
+      dvRows = [ blankInvest() ];
+    }
+    perCycleContrib = (data.perCycleContrib && typeof data.perCycleContrib === 'object') ? { ...data.perCycleContrib } : {};
+    perCycleExtra = (data.perCycleExtra && typeof data.perCycleExtra === 'object') ? { ...data.perCycleExtra } : {};
+    if (data.dvRate) {
+      dvRate = data.dvRate;
+      document.querySelectorAll('#dv_rate_group .rate-btn').forEach(b => {
+        b.classList.toggle('active', +b.dataset.rate === dvRate);
+      });
+    }
+    if (data.dvARate) {
+      dvARate = data.dvARate;
+      document.querySelectorAll('#dv_a_rate_group .rate-btn').forEach(b => {
+        b.classList.toggle('active', +b.dataset.rate === dvARate);
+      });
+    }
+    if (data.dvCycle === 10 || data.dvCycle === 6 || data.dvCycle === 0) {
+      dvCycle = data.dvCycle;
+      document.querySelectorAll('#dv_cycle_group .rate-btn').forEach(b => {
+        b.classList.toggle('active', +b.dataset.cy === dvCycle);
+      });
+      refreshCycleUI();
+    }
+    FIELDS.forEach(id => {
+      const el = $(id);
+      if (el && data[id] !== undefined) el.value = data[id];
+    });
+    buildInvestRows();
+    calcDividend();
+  };
+})();
+/* ============================================
+   客戶資料管理(各工具獨立分類)
+   ============================================ */
+function createClientManager(cfg) {
+  const $ = id => document.getElementById(id);
+  const STORAGE_KEY = cfg.storageKey;
+  let currentClientId = null;
+  const sel = $(cfg.selectId);
+  const statusEl = $(cfg.statusId);
+  const nameEl = $(cfg.nameId);
+
+  function loadAll() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+    catch (e) { return {}; }
+  }
+  function saveAll(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+  function refreshSelect() {
+    const all = loadAll();
+    const ids = Object.keys(all).sort((a, b) => {
+      const na = all[a].name || '~', nb = all[b].name || '~';
+      return na.localeCompare(nb, 'zh-Hant');
+    });
+    sel.innerHTML = '<option value="">— 新試算(未儲存) —</option>';
+    ids.forEach(id => {
+      const opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = all[id].name || '(無姓名)';
+      sel.appendChild(opt);
+    });
+    sel.value = (currentClientId && all[currentClientId]) ? currentClientId : '';
+  }
+
+  function showStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = 'client-status' + (type ? ' ' + type : '');
+    if (type === 'success') {
+      clearTimeout(showStatus._t);
+      showStatus._t = setTimeout(() => {
+        statusEl.textContent = ''; statusEl.className = 'client-status';
+      }, 3000);
+    }
+  }
+
+  function saveCurrent() {
+    const name = (nameEl.value || '').trim();
+    if (!name) { showStatus('⚠ 請先輸入客戶姓名', 'error'); nameEl.focus(); return; }
+    const all = loadAll();
+    const data = cfg.gather();
+    data.name = name;
+    data._ts = Date.now();
+    if (currentClientId && all[currentClientId]) {
+      all[currentClientId] = data; saveAll(all); refreshSelect();
+      showStatus(`✓ 已更新「${name}」的試算資料`, 'success');
+    } else {
+      const existingId = Object.keys(all).find(id => (all[id].name || '').trim() === name);
+      if (existingId) {
+        if (!confirm(`已有「${name}」的試算紀錄,要覆蓋嗎?\n\n按「確定」覆蓋舊資料\n按「取消」會建立新紀錄(同名)`)) {
+          const newId = 'c_' + Date.now();
+          all[newId] = data; saveAll(all); currentClientId = newId; refreshSelect();
+          showStatus(`✓ 已新增「${name}」(同名第 2 筆)`, 'success');
+          return;
+        }
+        all[existingId] = data; saveAll(all); currentClientId = existingId; refreshSelect();
+        showStatus(`✓ 已覆蓋「${name}」的試算資料`, 'success');
+      } else {
+        const newId = 'c_' + Date.now();
+        all[newId] = data; saveAll(all); currentClientId = newId; refreshSelect();
+        showStatus(`✓ 已新建客戶「${name}」`, 'success');
+      }
+    }
+  }
+
+  function loadClient(id) {
+    if (!id) { currentClientId = null; return; }
+    const all = loadAll();
+    const data = all[id];
+    if (!data) return;
+    currentClientId = id;
+    nameEl.value = data.name || '';
+    cfg.apply(data);
+    showStatus(`已載入「${data.name || '(無姓名)'}」`, '');
+  }
+
+  function blankNew(silent) {
+    currentClientId = null;
+    nameEl.value = '';
+    cfg.clear();
+    sel.value = '';
+    if (!silent) { showStatus('已開啟空白試算', ''); nameEl.focus(); }
+  }
+
+  function newClient() {
+    if (currentClientId || nameEl.value.trim()) {
+      if (!confirm('要開始新試算嗎?\n\n目前的內容若未儲存將會清空。')) return;
+    }
+    blankNew(false);
+  }
+
+  function deleteClient() {
+    if (!currentClientId) { showStatus('⚠ 請先從下拉選單選擇要刪除的客戶', 'error'); return; }
+    const all = loadAll();
+    const data = all[currentClientId];
+    if (!data) return;
+    const name = data.name || '(無姓名)';
+    if (!confirm(`確定要刪除「${name}」的試算資料嗎?\n\n此動作無法復原。`)) return;
+    delete all[currentClientId]; saveAll(all);
+    currentClientId = null; nameEl.value = ''; cfg.clear(); refreshSelect();
+    showStatus(`已刪除「${name}」`, 'success');
+  }
+
+  sel.addEventListener('change', e => {
+    const val = e.target.value;
+    if (!val) { blankNew(false); } else { loadClient(val); }
+  });
+  $(cfg.saveBtnId).addEventListener('click', saveCurrent);
+  $(cfg.newBtnId).addEventListener('click', newClient);
+  $(cfg.delBtnId).addEventListener('click', deleteClient);
+
+  refreshSelect();
+
+  // 暴露給所有客戶總覽用
+  if (cfg.tool) {
+    window.clientLoaders = window.clientLoaders || {};
+    window.clientLoaders[cfg.tool] = function(id) {
+      sel.value = id;
+      loadClient(id);
+    };
+  }
+}
+
+(function(){
+  const $ = id => document.getElementById(id);
+
+  // 房貸客戶
+  const MORT_FIELDS = ['ol','or','ot','yp','cash','rr','rt','invAmount'];
+  // 全域 getter/setter(給分享連結 + 客戶管理使用)
+  window.mortgageGetData = function() {
+    const d = {};
+    MORT_FIELDS.forEach(k => { const el = $(k); if (el) d[k] = el.value; });
+    const nm = $('ciName'); if (nm) d.ciName = nm.value;
+    return d;
+  };
+  window.mortgageSetData = function(data) {
+    MORT_FIELDS.forEach(k => { const el = $(k); if (el) el.value = (data && data[k]) ? data[k] : ''; });
+    const nm = $('ciName'); if (nm && data && data.ciName !== undefined) nm.value = data.ciName;
+    const t = $('ol'); if (t) t.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  createClientManager({
+    tool: 'mortgage',
+    storageKey: 'clients_mortgage_v1',
+    selectId: 'mort_clientSelect', statusId: 'mort_status', nameId: 'ciName',
+    saveBtnId: 'mort_btnSave', newBtnId: 'mort_btnNew', delBtnId: 'mort_btnDelete',
+    gather() { return window.mortgageGetData(); },
+    apply(data) { window.mortgageSetData(data); },
+    clear() {
+      MORT_FIELDS.forEach(k => { const el = $(k); if (el) el.value = ''; });
+      const t = $('ol'); if (t) t.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  });
+
+  // 信用貸款客戶
+  createClientManager({
+    tool: 'credit',
+    storageKey: 'clients_credit_v1',
+    selectId: 'crc_clientSelect', statusId: 'crc_status', nameId: 'crcName',
+    saveBtnId: 'crc_btnSave', newBtnId: 'crc_btnNew', delBtnId: 'crc_btnDelete',
+    gather() {
+      return (typeof window.creditGetData === 'function') ? window.creditGetData() : {};
+    },
+    apply(data) {
+      if (typeof window.creditSetData === 'function') window.creditSetData(data);
+    },
+    clear() {
+      if (typeof window.creditClear === 'function') window.creditClear();
+    }
+  });
+
+  // 配息退休客戶
+  createClientManager({
+    tool: 'dividend',
+    storageKey: 'clients_dividend_v1',
+    selectId: 'dvc_clientSelect', statusId: 'dvc_status', nameId: 'dvcName',
+    saveBtnId: 'dvc_btnSave', newBtnId: 'dvc_btnNew', delBtnId: 'dvc_btnDelete',
+    gather() {
+      return (typeof window.dividendGetData === 'function') ? window.dividendGetData() : {};
+    },
+    apply(data) {
+      if (typeof window.dividendSetData === 'function') window.dividendSetData(data);
+    },
+    clear() {
+      if (typeof window.dividendClear === 'function') window.dividendClear();
+    }
+  });
+})();
+
+/* ============================================
+   客戶資料備份(匯出/匯入)
+   ============================================ */
+(function(){
+  const $ = id => document.getElementById(id);
+  const STORAGE_KEYS = [
+    'clients_mortgage_v1',
+    'clients_reservoir_v1',
+    'clients_credit_v1',
+    'clients_dividend_v1'
+  ];
+
+  function showStatus(msg, kind) {
+    const el = $('backup_status');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'backup-status' + (kind ? (' ' + kind) : '');
+    if (kind === 'success') {
+      setTimeout(() => { if (el.textContent === msg) { el.textContent = ''; el.className = 'backup-status'; } }, 6000);
+    }
+  }
+
+  function doExport() {
+    const data = { _meta: { type: 'wealth-toolkit-backup', exportedAt: new Date().toISOString(), version: 1 } };
+    let totalClients = 0;
+    STORAGE_KEYS.forEach(k => {
+      try {
+        const v = localStorage.getItem(k);
+        if (v) {
+          data[k] = JSON.parse(v);
+          totalClients += Object.keys(data[k]).length;
+        } else {
+          data[k] = {};
+        }
+      } catch (e) { data[k] = {}; }
+    });
+    const ts = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    const fname = `財富藍圖備份_${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}_${pad(ts.getHours())}${pad(ts.getMinutes())}.json`;
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = fname;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showStatus('✅ 已匯出 ' + totalClients + ' 筆客戶資料 → ' + fname, 'success');
+  }
+
+  function doImport(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data._meta || data._meta.type !== 'wealth-toolkit-backup') {
+          if (!confirm('此檔案不是本工具的標準備份檔。仍要嘗試還原嗎?')) return;
+        }
+        // 統計目前資料
+        let curTotal = 0;
+        STORAGE_KEYS.forEach(k => {
+          try { curTotal += Object.keys(JSON.parse(localStorage.getItem(k) || '{}')).length; } catch(e){}
+        });
+        // 統計備份檔內容
+        let backupTotal = 0;
+        STORAGE_KEYS.forEach(k => {
+          if (data[k] && typeof data[k] === 'object') backupTotal += Object.keys(data[k]).length;
+        });
+        if (!confirm(`還原備份會覆蓋目前所有客戶資料!\n\n目前:${curTotal} 筆客戶\n備份檔:${backupTotal} 筆客戶\n\n確定要還原嗎?(此操作無法復原)`)) return;
+        // 執行還原
+        STORAGE_KEYS.forEach(k => {
+          if (data[k] && typeof data[k] === 'object') {
+            localStorage.setItem(k, JSON.stringify(data[k]));
+          }
+        });
+        showStatus('✅ 已還原 ' + backupTotal + ' 筆客戶資料,請重新整理頁面以套用', 'success');
+        // 提示重整
+        if (confirm('還原完成!需要重新整理頁面才能看到還原的客戶。要立即重新整理嗎?')) {
+          location.reload();
+        }
+      } catch (err) {
+        showStatus('❌ 還原失敗:檔案格式錯誤或損毀', 'error');
+        console.error('Backup import error:', err);
+      }
+    };
+    reader.onerror = function() {
+      showStatus('❌ 讀取檔案失敗', 'error');
+    };
+    reader.readAsText(file);
+  }
+
+  const expBtn = $('backup_export');
+  if (expBtn) expBtn.addEventListener('click', doExport);
+
+  const impInput = $('backup_import');
+  if (impInput) impInput.addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+      doImport(this.files[0]);
+      this.value = '';  // 清空以便能再次選同一個檔
+    }
+  });
+
+  // 追加匯入(不覆蓋,合併)
+  function doAppend(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data._meta || data._meta.type !== 'wealth-toolkit-backup') {
+          if (!confirm('此檔案不是本工具的標準備份檔。仍要嘗試追加嗎?')) return;
+        }
+        // 統計備份檔內容
+        let backupTotal = 0;
+        STORAGE_KEYS.forEach(k => {
+          if (data[k] && typeof data[k] === 'object') backupTotal += Object.keys(data[k]).length;
+        });
+        if (backupTotal === 0) { showStatus('⚠ 檔案內沒有客戶資料', 'error'); return; }
+
+        // 合併模式:逐筆比對,同名提示
+        let added = 0, overwritten = 0, skipped = 0;
+        STORAGE_KEYS.forEach(k => {
+          if (!data[k] || typeof data[k] !== 'object') return;
+          let current = {};
+          try { current = JSON.parse(localStorage.getItem(k) || '{}'); } catch(e){}
+
+          Object.entries(data[k]).forEach(([id, client]) => {
+            const newName = (client.name || '').trim();
+            // 找現有同名客戶
+            const existingId = Object.keys(current).find(cid => (current[cid].name || '').trim() === newName);
+            if (existingId) {
+              // 同名 → 詢問
+              const ok = confirm(`已有同名客戶「${newName}」(${k.replace('clients_','').replace('_v1','')})\n\n按「確定」= 覆蓋舊資料\n按「取消」= 跳過`);
+              if (ok) {
+                current[existingId] = { ...client, _ts: Date.now() };
+                overwritten++;
+              } else {
+                skipped++;
+              }
+            } else {
+              // 新增,給新 ID
+              const newId = 'c_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+              current[newId] = { ...client, _ts: Date.now() };
+              added++;
+            }
+          });
+          localStorage.setItem(k, JSON.stringify(current));
+        });
+        const msgParts = [];
+        if (added) msgParts.push(`新增 ${added} 筆`);
+        if (overwritten) msgParts.push(`覆蓋 ${overwritten} 筆`);
+        if (skipped) msgParts.push(`跳過 ${skipped} 筆`);
+        showStatus('✅ 追加完成:' + msgParts.join('、') + ',請重新整理頁面查看', 'success');
+        if (confirm('追加完成!需要重新整理頁面才能看到新客戶。要立即重新整理嗎?')) {
+          location.reload();
+        }
+      } catch (err) {
+        showStatus('❌ 追加失敗:檔案格式錯誤或損毀', 'error');
+        console.error('Backup append error:', err);
+      }
+    };
+    reader.onerror = function() { showStatus('❌ 讀取檔案失敗', 'error'); };
+    reader.readAsText(file);
+  }
+
+  const appendInput = $('backup_append');
+  if (appendInput) appendInput.addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+      doAppend(this.files[0]);
+      this.value = '';
+    }
+  });
+})();
+
+/* ============================================
+   首頁:客戶快速查詢(下拉式 + 彈窗選工具)
+   ============================================ */
+(function(){
+  const $ = id => document.getElementById(id);
+  const TOOLS = [
+    { key: 'mortgage',  storage: 'clients_mortgage_v1',  label: '房貸試算'    },
+    { key: 'credit',    storage: 'clients_credit_v1',    label: '信用貸款'    },
+    { key: 'dividend',  storage: 'clients_dividend_v1',  label: '配息退休'    }
+  ];
+
+  function loadAll(key) {
+    try { return JSON.parse(localStorage.getItem(key) || '{}'); }
+    catch (e) { return {}; }
+  }
+
+  // 收集所有客戶,按姓名彙整
+  function buildClientMap() {
+    const map = new Map();  // name → { name, refs: [{tool, id, ts, label}] }
+    TOOLS.forEach(t => {
+      const all = loadAll(t.storage);
+      Object.keys(all).forEach(id => {
+        const c = all[id] || {};
+        const name = (c.name || '').trim();
+        if (!name) return;
+        if (!map.has(name)) map.set(name, { name, refs: [] });
+        map.get(name).refs.push({ tool: t.key, id, ts: c._ts || 0, label: t.label });
+      });
+    });
+    return map;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // 渲染下拉選單
+  function renderSelect() {
+    const sel = $('ac_select');
+    if (!sel) return;
+    const map = buildClientMap();
+    const items = Array.from(map.values()).sort((a, b) => {
+      const ta = Math.max(...a.refs.map(r => r.ts), 0);
+      const tb = Math.max(...b.refs.map(r => r.ts), 0);
+      return tb - ta;  // 最近更新排前面
+    });
+    sel.innerHTML = '<option value="">— 選擇客戶查看規劃 —</option>';
+    items.forEach(c => {
+      const opt = document.createElement('option');
+      // value 用 name 當 key,因為同名歸併
+      opt.value = c.name;
+      opt.textContent = c.name + (c.refs.length > 1 ? `(${c.refs.length} 個規劃)` : '');
+      sel.appendChild(opt);
+    });
+    sel.value = '';
+  }
+
+  // 開啟彈窗讓使用者選工具(或直接跳)
+  function pickPlan(name) {
+    const map = buildClientMap();
+    const c = map.get(name);
+    if (!c || c.refs.length === 0) return;
+    // 只有一個規劃 → 直接跳
+    if (c.refs.length === 1) {
+      const r = c.refs[0];
+      if (typeof window.openToolWithClient === 'function') {
+        window.openToolWithClient(r.tool, r.id);
+      }
+      return;
+    }
+    // 多個規劃 → 彈窗選
+    const mask = $('pickerMask');
+    $('picker_name').textContent = c.name;
+    const list = $('picker_list');
+    list.innerHTML = '';
+    // 排序:最近更新的優先
+    const sortedRefs = c.refs.slice().sort((a, b) => b.ts - a.ts);
+    sortedRefs.forEach(r => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'picker-btn';
+      btn.innerHTML = `<span>${escapeHtml(r.label)}</span><span class="pb-arrow">→</span>`;
+      btn.addEventListener('click', () => {
+        mask.style.display = 'none';
+        if (typeof window.openToolWithClient === 'function') {
+          window.openToolWithClient(r.tool, r.id);
+        }
+      });
+      list.appendChild(btn);
+    });
+    mask.style.display = 'flex';
+  }
+
+  // 下拉選擇事件
+  const sel = $('ac_select');
+  if (sel) {
+    sel.addEventListener('change', e => {
+      const name = e.target.value;
+      if (name) pickPlan(name);
+      e.target.value = '';  // 重置,以便再次選同一個
+    });
+  }
+  // 彈窗取消
+  const cancelBtn = $('picker_cancel');
+  if (cancelBtn) cancelBtn.addEventListener('click', () => {
+    $('pickerMask').style.display = 'none';
+  });
+  // 點遮罩外關閉
+  const mask = $('pickerMask');
+  if (mask) mask.addEventListener('click', e => {
+    if (e.target === mask) mask.style.display = 'none';
+  });
+
+  // 首頁顯示時刷新名單
+  window.refreshAllClients = renderSelect;
+  renderSelect();
+
+  // localStorage 跨頁同步
+  window.addEventListener('storage', renderSelect);
+})();
+
+</script>
+
+</div>
+<!-- ============ /mainContent 結束 ============ -->
+
+<script>
+/* ========== 分享連結系統(純前端版) ========== */
+/* 顧問點「複製分享連結」→ 把當前試算編碼進 URL hash → 複製
+   客戶開啟連結 → 解鎖後自動套用資料,直接看到顧問填好的試算
+   注意:純前端版無法限制「一次性使用」或「擋轉傳」,
+        如果未來要強化安全,可以啟用 Vercel KV 後端版 */
+(function() {
+  // UTF-8 safe Base64 編碼/解碼
+  function encodeB64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+  function decodeB64(b64) {
+    return decodeURIComponent(escape(atob(b64)));
+  }
+
+  function makeShareUrl(tool, data) {
+    const json = JSON.stringify(data);
+    const b64 = encodeB64(json);
+    return location.origin + location.pathname + '#share=' + tool + ':' + b64;
+  }
+
+  function showToast(msg, isError) {
+    let toast = document.getElementById('shareToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'shareToast';
+      toast.className = 'share-toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.className = 'share-toast' + (isError ? ' error' : '') + ' show';
+    setTimeout(() => { toast.className = 'share-toast'; }, 3000);
+  }
+
+  async function copyShareUrl(tool) {
+    let data;
+    if (tool === 'mortgage' && window.mortgageGetData) data = window.mortgageGetData();
+    else if (tool === 'credit' && window.creditGetData) data = window.creditGetData();
+    else if (tool === 'dividend' && window.dividendGetData) data = window.dividendGetData();
+    else { showToast('❌ 此工具暫不支援分享', true); return; }
+
+    const url = makeShareUrl(tool, data);
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast('✅ 分享連結已複製!可直接傳給客戶');
+    } catch (e) {
+      prompt('請複製此網址傳給客戶:', url);
+    }
+  }
+
+  // 套用工具資料
+  function applyToolData(tool, data) {
+    const tabBtn = document.querySelector(`.tab-btn[data-tab="${tool}"]`);
+    if (tabBtn) tabBtn.click();
+    const homeView = document.getElementById('home-view');
+    const toolView = document.getElementById('tool-view');
+    if (homeView) homeView.style.display = 'none';
+    if (toolView) toolView.style.display = 'block';
+    const topbar = document.getElementById('topbar');
+    if (topbar) topbar.style.display = '';
+
+    setTimeout(() => {
+      try {
+        if (tool === 'mortgage' && window.mortgageSetData) window.mortgageSetData(data);
+        else if (tool === 'credit' && window.creditSetData) window.creditSetData(data);
+        else if (tool === 'dividend' && window.dividendSetData) window.dividendSetData(data);
+      } catch (e) { console.error('Apply data error:', e); }
+    }, 100);
+
+    setTimeout(() => showSharedBanner(tool), 200);
+  }
+
+  function applySharedData() {
+    const hash = location.hash;
+    if (!hash || !hash.startsWith('#share=')) return null;
+
+    const payload = hash.slice('#share='.length);
+    const idx = payload.indexOf(':');
+    if (idx < 0) return null;
+
+    const tool = payload.slice(0, idx);
+    const b64 = payload.slice(idx + 1);
+
+    let data;
+    try {
+      const json = decodeB64(b64);
+      data = JSON.parse(json);
+    } catch (e) {
+      console.error('Invalid shared data:', e);
+      return null;
+    }
+
+    applyToolData(tool, data);
+    return tool;
+  }
+
+  function showSharedBanner(tool) {
+    const labels = { mortgage: '房貸增貸', credit: '信用貸款', dividend: '配息退休規劃' };
+    const pane = document.getElementById('tab-' + tool);
+    if (!pane) return;
+    const old = pane.querySelector('.shared-banner');
+    if (old) old.remove();
+    const banner = document.createElement('div');
+    banner.className = 'shared-banner';
+    banner.innerHTML = `✨ <strong>已自動帶入${labels[tool] || ''}試算資料</strong> — 您看到的數字是顧問為您試算的結果,可直接捲動瀏覽各區計算結果。<button class="shared-banner-close" type="button">×</button>`;
+    pane.insertBefore(banner, pane.firstChild);
+    banner.querySelector('.shared-banner-close').addEventListener('click', function() {
+      banner.remove();
+    });
+  }
+
+  function bind(id, tool) {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', () => copyShareUrl(tool));
+  }
+  bind('mort_btnShare', 'mortgage');
+  bind('crc_btnShare', 'credit');
+  bind('dvc_btnShare', 'dividend');
+
+  window.__applySharedAfterUnlock = applySharedData;
+})();
+
+/* ========== 密碼保護邏輯(雙密碼模式) ========== */
+(function() {
+  // ⚠️ 密碼設定區 — 要改密碼請改這裡(↓ 引號內的值)
+  const ADVISOR_PASSWORD = "0226";     // 顧問密碼:看到完整功能(客戶清單、儲存、備份)
+  const CLIENT_PASSWORD  = "0977009";  // 客戶密碼:開分享連結要輸入,只看到試算結果
+
+  // 連續錯誤多少次後鎖定
+  const MAX_TRIES = 5;
+  const LOCK_MINUTES = 5;
+  // 解鎖後記住多久(0 = 每次都要重新輸入,1 = 1 小時內免輸入)
+  const REMEMBER_HOURS = 0;
+
+  const STORAGE_KEY = 'pwd_unlocked_at';
+  const TRIES_KEY = 'pwd_tries';
+  const LOCK_UNTIL_KEY = 'pwd_lock_until';
+  const HOUR_MS = 60 * 60 * 1000;
+  const MIN_MS = 60 * 1000;
+
+  const lockEl = document.getElementById('passwordLock');
+  const mainEl = document.getElementById('mainContent');
+  const inputEl = document.getElementById('pwdInput');
+  const submitEl = document.getElementById('pwdSubmit');
+  const messageEl = document.getElementById('pwdMessage');
+
+  // 檢查是否還在「已解鎖」期間
+  function isUnlocked() {
+    if (REMEMBER_HOURS <= 0) return false;
+    const unlockedAt = +localStorage.getItem(STORAGE_KEY) || 0;
+    return (Date.now() - unlockedAt) < REMEMBER_HOURS * HOUR_MS;
+  }
+
+  // 檢查是否被鎖定
+  function getLockRemaining() {
+    const lockUntil = +localStorage.getItem(LOCK_UNTIL_KEY) || 0;
+    const remaining = lockUntil - Date.now();
+    return remaining > 0 ? remaining : 0;
+  }
+
+  function unlock(mode) {
+    localStorage.setItem(STORAGE_KEY, Date.now().toString());
+    localStorage.removeItem(TRIES_KEY);
+    lockEl.style.display = 'none';
+    mainEl.style.display = 'block';
+    // 設定 body class 以區分模式
+    document.body.classList.add('mode-' + mode);
+    // 如果 URL 有分享資料,自動套用(顧問或客戶模式都會跑)
+    if (typeof window.__applySharedAfterUnlock === 'function') {
+      setTimeout(() => window.__applySharedAfterUnlock(), 50);
+    }
+  }
+
+  function showMessage(msg, type) {
+    messageEl.textContent = msg;
+    messageEl.className = 'pwd-message ' + (type || '');
+  }
+
+  function tryPassword() {
+    const lockMs = getLockRemaining();
+    if (lockMs > 0) {
+      const min = Math.ceil(lockMs / MIN_MS);
+      showMessage(`輸入次數過多,請於 ${min} 分鐘後再試`, 'error');
+      return;
+    }
+
+    const input = inputEl.value;
+    if (input === ADVISOR_PASSWORD) {
+      unlock('advisor');
+    } else if (input === CLIENT_PASSWORD) {
+      unlock('client');
+    } else {
+      const tries = (+localStorage.getItem(TRIES_KEY) || 0) + 1;
+      localStorage.setItem(TRIES_KEY, tries.toString());
+
+      if (tries >= MAX_TRIES) {
+        const lockUntil = Date.now() + LOCK_MINUTES * MIN_MS;
+        localStorage.setItem(LOCK_UNTIL_KEY, lockUntil.toString());
+        localStorage.removeItem(TRIES_KEY);
+        showMessage(`密碼錯誤次數過多,已鎖定 ${LOCK_MINUTES} 分鐘`, 'error');
+      } else {
+        showMessage(`密碼錯誤,還有 ${MAX_TRIES - tries} 次機會`, 'error');
+      }
+      inputEl.value = '';
+      inputEl.focus();
+    }
+  }
+
+  // 啟動
+  if (isUnlocked()) {
+    unlock('advisor');  // REMEMBER_HOURS > 0 才會進這分支(目前 = 0)
+  } else {
+    submitEl.addEventListener('click', tryPassword);
+    inputEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') tryPassword();
+    });
+    setTimeout(() => inputEl.focus(), 100);
+  }
+})();
+</script>
+
+</body>
+</html>
